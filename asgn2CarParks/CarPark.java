@@ -28,7 +28,7 @@ import asgn2Vehicles.Vehicle;
  * of the simulator. In particular, it maintains a collection of currently parked vehicles, 
  * a queue of vehicles wishing to enter the car park, and an historical list of vehicles which 
  * have left or were never able to gain entry. 
- * 
+ * ddddddd
  * The class maintains a wide variety of constraints on small cars, normal cars and motorcycles 
  * and their access to the car park. See the method javadoc for details. 
  * 
