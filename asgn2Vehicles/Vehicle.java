@@ -49,6 +49,8 @@ public abstract class Vehicle {
 	private vehicleState currentState;
 	private int departureTime;
 	private int arrivalTime;
+	private int parkingTime;
+	private int intendedDuration;
 	
 	/**
 	 * Vehicle Constructor 
@@ -92,6 +94,8 @@ public abstract class Vehicle {
 		
 		currentState = vehicleState.PARKED;
 		departureTime = parkingTime + intendedDuration;
+		parkingTime = this.parkingTime;
+		intendedDuration = this.intendedDuration;
 		
 	}
 	
@@ -124,7 +128,7 @@ public abstract class Vehicle {
 		else if (departureTime > this.departureTime){
 			throw new VehicleException("The vehicle has overstayed it's duration");
 		}
-		departureTime = this.departureTime;
+		//departureTime = this.departureTime;
 	}
 
 	/**
@@ -165,27 +169,34 @@ public abstract class Vehicle {
 	 * @author Lewis
 	 */
 	public int getParkingTime() {
+		return parkingTime;
 	}
 
 	/**
 	 * Simple getter for the vehicle ID
 	 * @return the vehID
+	 * @author Lewis
 	 */
 	public String getVehID() {
+		return vehicleId;
 	}
 
 	/**
 	 * Boolean status indicating whether vehicle is currently parked 
 	 * @return true if the vehicle is in a parked state; false otherwise
+	 * @author Lewis
 	 */
 	public boolean isParked() {
+		return (currentState == vehicleState.PARKED);
 	}
 
 	/**
 	 * Boolean status indicating whether vehicle is currently queued
 	 * @return true if vehicle is in a queued state, false otherwise 
+	 * @author Lewis
 	 */
 	public boolean isQueued() {
+		return (currentState == vehicleState.QUEUED);
 	}
 	
 	/**
@@ -195,6 +206,7 @@ public abstract class Vehicle {
 	 * @return true if satisfied, false if never in parked state or if queuing time exceeds max allowable 
 	 */
 	public boolean isSatisfied() {
+		if (currentState != vehicleState.PARKED || departureTime < )
 	}
 	
 	/* (non-Javadoc)
