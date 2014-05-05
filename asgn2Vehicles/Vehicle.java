@@ -44,7 +44,7 @@ import asgn2Simulators.Constants;
  */
 public abstract class Vehicle {
 	
-	private enum vehicleState {NEUTRAL, PARKED, QUED, ARCHIVED};
+	private enum vehicleState {NEUTRAL, PARKED, QUEUED, ARCHIVED};
 	private String vehicleId;
 	private vehicleState currentState;
 	
@@ -55,7 +55,7 @@ public abstract class Vehicle {
 	 *        either queued, given entry to the car park or forced to leave
 	 * @throws VehicleException if arrivalTime is <= 0 
 	 * 
-	 * @author kyle Annett
+	 * @author Kyle Annett
 	 */
 	public Vehicle(String vehID,int arrivalTime) throws VehicleException  {
 		vehicleId = vehID;
@@ -81,8 +81,15 @@ public abstract class Vehicle {
 	 * Transition vehicle to queued state (mutator) 
 	 * Queuing formally starts on arrival and ceases with a call to {@link #exitQueuedState(int) exitQueuedState}
 	 * @throws VehicleException if the vehicle is already in a queued or parked state
+	 * 
+	 * @author Kyle Annett
 	 */
 	public void enterQueuedState() throws VehicleException {
+		if (currentState == vehicleState.QUEUED){
+			throw new VehicleException("vehicle already within the que");
+		}
+				
+		currentState = vehicleState.QUEUED;
 	}
 	
 	/**
@@ -92,6 +99,9 @@ public abstract class Vehicle {
 	 * 		  state or if the revised departureTime < parkingTime
 	 */
 	public void exitParkedState(int departureTime) throws VehicleException {
+		if (currentState != vehicleState.PARKED || currentState == vehicleState.QUEUED){
+			throw new VehicleException("vehicle is not in the right state");
+		}
 	}
 
 	/**
