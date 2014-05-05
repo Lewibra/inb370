@@ -44,14 +44,22 @@ import asgn2Simulators.Constants;
  */
 public abstract class Vehicle {
 	
+	private String vehicleId;
+	
 	/**
 	 * Vehicle Constructor 
 	 * @param vehID String identification number or plate of the vehicle
 	 * @param arrivalTime int time (minutes) at which the vehicle arrives and is 
 	 *        either queued, given entry to the car park or forced to leave
 	 * @throws VehicleException if arrivalTime is <= 0 
+	 * 
+	 * @author kyle Annett
 	 */
 	public Vehicle(String vehID,int arrivalTime) throws VehicleException  {
+		vehicleId = vehID;
+		if (arrivalTime <=0){
+			throw new VehicleException("cannot arrive before open");
+		}
 	}
 
 	/**

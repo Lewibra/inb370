@@ -13,7 +13,6 @@ package asgn2Vehicles;
 import asgn2Exceptions.VehicleException;
 
 /**
- * kyle comment lol :)
  * The Car class is a specialisation of the Vehicle class to cater for production cars
  * This version of the class does not cater for model types, but records whether or not the 
  * vehicle can use a small parking space. 

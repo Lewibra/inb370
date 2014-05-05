@@ -27,6 +27,7 @@ public class CarTests {
 	 */
 	@Before
 	public void setUp() throws Exception {
+		
 	}
 
 	/**
