@@ -47,7 +47,8 @@ public abstract class Vehicle {
 	private enum vehicleState {NEUTRAL, PARKED, QUEUED, ARCHIVED};
 	private String vehicleId;
 	private vehicleState currentState;
-	private int depatureTime;
+	private int departureTime;
+	private int arrivalTime;
 	
 	/**
 	 * Vehicle Constructor 
@@ -60,6 +61,8 @@ public abstract class Vehicle {
 	 */
 	public Vehicle(String vehID,int arrivalTime) throws VehicleException  {
 		vehicleId = vehID;
+		this.arrivalTime = arrivalTime;
+		
 		currentState = vehicleState.NEUTRAL;
 		if (arrivalTime <=0){
 			throw new VehicleException("cannot arrive before open");
@@ -88,7 +91,7 @@ public abstract class Vehicle {
 		}
 		
 		currentState = vehicleState.PARKED;
-		depatureTime = parkingTime + intendedDuration;
+		departureTime = parkingTime + intendedDuration;
 		
 	}
 	
@@ -118,10 +121,10 @@ public abstract class Vehicle {
 			throw new VehicleException("vehicle is not in the right state");
 		}
 		
-		else if (depatureTime > departureTime){
+		else if (departureTime > departureTime){
 			throw new VehicleException("The vehicle has overstayed it's duration");
 		}
-		depatureTime = departureTime;
+		departureTime = departureTime;
 	}
 
 	/**
@@ -138,8 +141,10 @@ public abstract class Vehicle {
 	/**
 	 * Simple getter for the arrival time 
 	 * @return the arrivalTime
+	 * @author Lewis
 	 */
 	public int getArrivalTime() {
+		return arrivalTime;
 	}
 	
 	/**
@@ -147,14 +152,17 @@ public abstract class Vehicle {
 	 * Note: result may be 0 before parking, show intended departure 
 	 * time while parked; and actual when archived
 	 * @return the departureTime
+	 * @author Lewis
 	 */
 	public int getDepartureTime() {
+		return departureTime;
 	}
 	
 	/**
 	 * Simple getter for the parking time
 	 * Note: result may be 0 before parking
 	 * @return the parkingTime
+	 * @author Lewis
 	 */
 	public int getParkingTime() {
 	}
