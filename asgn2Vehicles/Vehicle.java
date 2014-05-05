@@ -80,7 +80,7 @@ public abstract class Vehicle {
 	 * @author Lewis Tracy
 	 */
 	public void enterParkedState(int parkingTime, int intendedDuration) throws VehicleException {
-		if (currentState == vehicleState.PARKED || currentState == vehicleState.QUED){
+		if (currentState == vehicleState.PARKED || currentState == vehicleState.QUEUED){
 			throw new VehicleException("The vehicle is already parked or queued");
 		}
 		if (parkingTime < 0){
