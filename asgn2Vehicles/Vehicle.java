@@ -117,6 +117,11 @@ public abstract class Vehicle {
 		if (currentState != vehicleState.PARKED || currentState == vehicleState.QUEUED){
 			throw new VehicleException("vehicle is not in the right state");
 		}
+		
+		else if (depatureTime > departureTime){
+			throw new VehicleException("The vehicle has overstayed it's duration");
+		}
+		depatureTime = departureTime;
 	}
 
 	/**
