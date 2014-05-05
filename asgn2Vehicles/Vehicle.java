@@ -44,7 +44,9 @@ import asgn2Simulators.Constants;
  */
 public abstract class Vehicle {
 	
+	private enum vehicleState {NEUTRAL, PARKED, QUED, ARCHIVED};
 	private String vehicleId;
+	private vehicleState currentState;
 	
 	/**
 	 * Vehicle Constructor 
@@ -57,6 +59,7 @@ public abstract class Vehicle {
 	 */
 	public Vehicle(String vehID,int arrivalTime) throws VehicleException  {
 		vehicleId = vehID;
+		currentState = vehicleState.NEUTRAL;
 		if (arrivalTime <=0){
 			throw new VehicleException("cannot arrive before open");
 		}
