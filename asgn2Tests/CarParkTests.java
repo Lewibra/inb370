@@ -15,6 +15,7 @@ import static org.junit.Assert.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import asgn2CarParks.CarPark;
 
 /**
  * @author hogan
@@ -27,6 +28,7 @@ public class CarParkTests {
 	 */
 	@Before
 	public void setUp() throws Exception {
+		CarPark basicCarPark = new CarPark();
 	}
 
 	/**
