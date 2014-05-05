@@ -16,6 +16,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import asgn2CarParks.CarPark;
+import asgn2Vehicles.*;
 
 /**
  * @author hogan
@@ -64,26 +65,34 @@ public class CarParkTests {
 
 	/**
 	 * Test method for {@link asgn2CarParks.CarPark#carParkEmpty()}.
+	 * @author Lewis
 	 */
 	@Test
 	public void testCarParkEmpty() {
-		fail("Not yet implemented"); // TODO
+		CarPark testInstance = new CarPark();
+		assertTrue(testInstance.carParkEmpty());
 	}
 
 	/**
 	 * Test method for {@link asgn2CarParks.CarPark#carParkFull()}.
+	 * @author Lewis
 	 */
 	@Test
 	public void testCarParkFull() {
-		fail("Not yet implemented"); // TODO
+		CarPark testInstance = new CarPark();
+		assertTrue(testInstance.carParkFull());
 	}
 
 	/**
 	 * Test method for {@link asgn2CarParks.CarPark#enterQueue(asgn2Vehicles.Vehicle)}.
+	 * @author Lewis
 	 */
 	@Test
 	public void testEnterQueue() {
-		fail("Not yet implemented"); // TODO
+		CarPark testInstance = new CarPark();
+		String testString = "sdsds";
+
+		
 	}
 
 	/**
