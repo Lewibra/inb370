@@ -47,6 +47,7 @@ public abstract class Vehicle {
 	private enum vehicleState {NEUTRAL, PARKED, QUEUED, ARCHIVED};
 	private String vehicleId;
 	private vehicleState currentState;
+	private int depatureTime;
 	
 	/**
 	 * Vehicle Constructor 
@@ -73,8 +74,22 @@ public abstract class Vehicle {
 	 *  	  Note that the parkingTime + intendedDuration yields the departureTime
 	 * @throws VehicleException if the vehicle is already in a parked or queued state, if parkingTime < 0, 
 	 *         or if intendedDuration is less than the minimum prescribed in asgnSimulators.Constants
+	 * @author Lewis Tracy
 	 */
 	public void enterParkedState(int parkingTime, int intendedDuration) throws VehicleException {
+		if (currentState == vehicleState.PARKED || currentState == vehicleState.QUED){
+			throw new VehicleException("The vehicle is already parked or queued");
+		}
+		if (parkingTime < 0){
+			throw new VehicleException("The parking time needs to be greater than 0");
+		}
+		if (intendedDuration < Constants.MINIMUM_STAY){
+			throw new VehicleException("Please enter a time larger than the minimum stay time");
+		}
+		
+		currentState = vehicleState.PARKED;
+		depatureTime = parkingTime + intendedDuration;
+		
 	}
 	
 	/**
