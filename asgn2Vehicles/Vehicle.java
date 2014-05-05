@@ -121,10 +121,10 @@ public abstract class Vehicle {
 			throw new VehicleException("vehicle is not in the right state");
 		}
 		
-		else if (departureTime > departureTime){
+		else if (departureTime > this.departureTime){
 			throw new VehicleException("The vehicle has overstayed it's duration");
 		}
-		departureTime = departureTime;
+		departureTime = this.departureTime;
 	}
 
 	/**
