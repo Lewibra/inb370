@@ -51,6 +51,7 @@ public abstract class Vehicle {
 	private int arrivalTime;
 	private int parkingTime;
 	private int intendedDuration;
+	private int queuingTime;
 	
 	/**
 	 * Vehicle Constructor 
@@ -112,6 +113,9 @@ public abstract class Vehicle {
 		}
 				
 		currentState = vehicleState.QUEUED;
+		
+		//COMEBACK TO THIS
+		queuingTime = 0;
 	}
 	
 	/**
@@ -206,7 +210,11 @@ public abstract class Vehicle {
 	 * @return true if satisfied, false if never in parked state or if queuing time exceeds max allowable 
 	 */
 	public boolean isSatisfied() {
-		if (currentState != vehicleState.PARKED || departureTime < )
+		if (currentState != vehicleState.PARKED || Constants.MAXIMUM_QUEUE_TIME < queuingTime){
+			return true;
+		}
+		
+		return false;
 	}
 	
 	/* (non-Javadoc)
