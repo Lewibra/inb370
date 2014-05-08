@@ -52,6 +52,9 @@ public abstract class Vehicle {
 	private int parkingTime;
 	private int intendedDuration;
 	private int queuingTime;
+	private int endQueueTime;
+	private boolean checkParked;
+	private boolean checkQueued;
 	
 	/**
 	 * Vehicle Constructor 
@@ -97,6 +100,7 @@ public abstract class Vehicle {
 		departureTime = parkingTime + intendedDuration;
 		parkingTime = this.parkingTime;
 		intendedDuration = this.intendedDuration;
+		checkParked = true;
 		
 	}
 	
@@ -113,6 +117,7 @@ public abstract class Vehicle {
 		}
 				
 		currentState = vehicleState.QUEUED;
+		checkQueued = true;
 		
 		//COMEBACK TO THIS
 		queuingTime = 0;
@@ -123,6 +128,7 @@ public abstract class Vehicle {
 	 * @param departureTime int holding the actual departure time 
 	 * @throws VehicleException if the vehicle is not in a parked state, is in a queued 
 	 * 		  state or if the revised departureTime < parkingTime
+	 * @Kyle
 	 */
 	public void exitParkedState(int departureTime) throws VehicleException {
 		if (currentState != vehicleState.PARKED || currentState == vehicleState.QUEUED){
@@ -132,18 +138,27 @@ public abstract class Vehicle {
 		else if (departureTime > this.departureTime){
 			throw new VehicleException("The vehicle has overstayed it's duration");
 		}
-		//departureTime = this.departureTime;
+		currentState = vehicleState.ARCHIVED;
 	}
 
 	/**
 	 * Transition vehicle from queued state (mutator) 
-	 * Queuing formally starts on arrival with a call to {@link #enterQueuedState() enterQueuedState}
+	 * Queuing formally starts on arrival with a call to {@lin4k #enterQueuedState() enterQueuedState}
 	 * Here we exit and set the time at which the vehicle left the queue
 	 * @param exitTime int holding the time at which the vehicle left the queue 
 	 * @throws VehicleException if the vehicle is in a parked state or not in a queued state, or if 
 	 *  exitTime is not later than arrivalTime for this vehicle
+	 *  @Kyle
 	 */
 	public void exitQueuedState(int exitTime) throws VehicleException {
+		if(arrivalTime >= exitTime){
+			throw new VehicleException("Cannot leave the queue before arriving");
+		}
+		else if (currentState != vehicleState.QUEUED){
+			throw new VehicleException("Vehicle is not within the queue");
+		}
+		endQueueTime = exitTime;
+		currentState = vehicleState.NEUTRAL;
 	}
 	
 	/**
@@ -228,14 +243,24 @@ public abstract class Vehicle {
 	 * Boolean status indicating whether vehicle was ever parked
 	 * Will return false for vehicles in queue or turned away 
 	 * @return true if vehicle was or is in a parked state, false otherwise 
+	 * @Kyle
 	 */
 	public boolean wasParked() {
+		if (checkParked){
+			return true;
+		}
+		return false;
 	}
 
 	/**
 	 * Boolean status indicating whether vehicle was ever queued
 	 * @return true if vehicle was or is in a queued state, false otherwise 
+	 * @Kyle
 	 */
 	public boolean wasQueued() {
+		if (checkQueued){
+			return true;
+		}
+		return false;
 	}
 }
