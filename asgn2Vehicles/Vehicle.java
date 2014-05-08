@@ -223,6 +223,7 @@ public abstract class Vehicle {
 	 * Satisfied if they park; dissatisfied if turned away, or queuing for too long 
 	 * Note that calls to this method may not reflect final status 
 	 * @return true if satisfied, false if never in parked state or if queuing time exceeds max allowable 
+	 * @author Lewis
 	 */
 	public boolean isSatisfied() {
 		if (currentState != vehicleState.PARKED || Constants.MAXIMUM_QUEUE_TIME < queuingTime){

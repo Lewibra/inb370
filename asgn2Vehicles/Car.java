@@ -32,9 +32,10 @@ public class Car extends Vehicle {
 	 *        either queued or given entry to the carpark 
 	 * @param small - indicator whether car is regarded as small or not
 	 * @throws VehicleException if arrivalTime is <= 0  
-	 * @author kyleannett
+	 * @author kyleannett, Lewis
 	 */
 	public Car(String vehID, int arrivalTime, boolean small) throws VehicleException {
+		super(vehID, arrivalTime);
 		if (arrivalTime <= 0){
 			throw new VehicleException("cannot arrive before park is open");
 		}
