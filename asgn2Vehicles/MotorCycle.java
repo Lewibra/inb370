@@ -20,6 +20,8 @@ import asgn2Exceptions.VehicleException;
  *
  */
 public class MotorCycle extends Vehicle {
+	
+	private String vehicleID;
 
 	/**
 	 * MotorCycle constructor 
@@ -29,5 +31,9 @@ public class MotorCycle extends Vehicle {
 	 * @throws VehicleException if arrivalTime is <= 0  
 	 */
 	public MotorCycle(String vehID, int arrivalTime) throws VehicleException {
+		if (arrivalTime <= 0){
+			throw new VehicleException("cannot arrive before park is open");
+		}
+		vehicleID = vehID;
 	}
 }

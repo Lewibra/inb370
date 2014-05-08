@@ -34,7 +34,7 @@ public class Car extends Vehicle {
 	 * @throws VehicleException if arrivalTime is <= 0  
 	 */
 	public Car(String vehID, int arrivalTime, boolean small) throws VehicleException {
-		if (arrivalTime >= 0){
+		if (arrivalTime <= 0){
 			throw new VehicleException("cannot arrive before park is open");
 		}
 		vehicleID = vehID;
