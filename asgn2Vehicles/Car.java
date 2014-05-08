@@ -23,6 +23,7 @@ import asgn2Exceptions.VehicleException;
 public class Car extends Vehicle {
 	
 	private boolean small; 
+	private String vehicleID;
 
 	/**
 	 * The Car Constructor - small set at creation, not mutable. 
@@ -33,6 +34,16 @@ public class Car extends Vehicle {
 	 * @throws VehicleException if arrivalTime is <= 0  
 	 */
 	public Car(String vehID, int arrivalTime, boolean small) throws VehicleException {
+		if (arrivalTime >= 0){
+			throw new VehicleException("cannot arrive before park is open");
+		}
+		vehicleID = vehID;
+		if(small){
+			small = true;
+		}
+		else{
+			small = false;
+		}
 	}
 
 	/**
@@ -41,6 +52,10 @@ public class Car extends Vehicle {
 	 * @return true if small parking space, false otherwise
 	 */
 	public boolean isSmall() {
+		if (small){
+			return true;
+		}
+		return false;
 	}
 
 	/* (non-Javadoc)
