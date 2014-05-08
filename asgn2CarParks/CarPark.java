@@ -39,6 +39,11 @@ import asgn2Vehicles.Vehicle;
  *
  */
 public class CarPark {
+	
+	private int maxCarSpaces;
+	private int maxSmallSpaces;
+	private int maxBikeSpaces;
+	private int maxQueueLength;
 
 	
 	/**
@@ -57,8 +62,13 @@ public class CarPark {
 	 * 						 restricted to small cars
 	 * @param maxMotorCycleSpaces maximum number of spaces allocated to MotorCycles
 	 * @param maxQueueSize maximum number of vehicles allowed to queue
+	 * @author kyleannett
 	 */
 	public CarPark(int maxCarSpaces,int maxSmallCarSpaces, int maxMotorCycleSpaces, int maxQueueSize) {
+		maxCarSpaces = this.maxCarSpaces;
+		maxSmallSpaces = maxSmallCarSpaces;
+		maxBikeSpaces = maxMotorCycleSpaces;
+		maxQueueLength = maxQueueSize;
 	}
 
 	/**
