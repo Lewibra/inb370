@@ -32,6 +32,7 @@ public class Car extends Vehicle {
 	 *        either queued or given entry to the carpark 
 	 * @param small - indicator whether car is regarded as small or not
 	 * @throws VehicleException if arrivalTime is <= 0  
+	 * @author kyleannett
 	 */
 	public Car(String vehID, int arrivalTime, boolean small) throws VehicleException {
 		if (arrivalTime <= 0){
@@ -50,6 +51,7 @@ public class Car extends Vehicle {
 	 * Boolean status indicating whether car is small enough for small 
 	 * car parking spaces  
 	 * @return true if small parking space, false otherwise
+	 * @author Kyle
 	 */
 	public boolean isSmall() {
 		if (small){
