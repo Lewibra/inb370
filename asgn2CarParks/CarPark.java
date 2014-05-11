@@ -55,7 +55,8 @@ public class CarPark {
 	private boolean queueIsEmpty;
 	
 	private ArrayList<Vehicle> archivedCars;
-	private Queue<Vehicle> queue;
+	private ArrayList<Vehicle> archiveDissatisfiedCars;
+	private ArrayList<Vehicle> queue;
 	private Car[] smallCarArray;
 	private Car[] carArray;
 	private MotorCycle[] bikeArray;
@@ -73,7 +74,8 @@ public class CarPark {
 				Constants.DEFAULT_MAX_MOTORCYCLE_SPACES,Constants.DEFAULT_MAX_QUEUE_SIZE);
 		
 		archivedCars = new ArrayList();
-		queue = new LinkedList();
+		archiveDissatisfiedCars  = new ArrayList();
+		queue = new ArrayList();
 		
 		smallCarArray = new Car[Constants.DEFAULT_MAX_SMALL_CAR_SPACES];
 		carArray = new Car[Constants.DEFAULT_MAX_CAR_SPACES];
@@ -131,8 +133,21 @@ public class CarPark {
 	 * Archive vehicles which have stayed in the queue too long 
 	 * @param time int holding current simulation time 
 	 * @throws VehicleException if one or more vehicles not in the correct state or if timing constraints are violated
+	 * @author kyleannett
 	 */
 	public void archiveQueueFailures(int time) throws VehicleException {
+		for(int i = 0; i < queue.size(); i++){
+			if((queue.get(i).isQueued() != true)){
+				throw new VehicleException("vehicle in the wrong state");
+			}
+			else if(time > 0 || time > Constants.CLOSING_TIME){
+				throw new VehicleException("vehicle has been in the queue for too long");
+			}
+			else if(time > Constants.MAXIMUM_QUEUE_TIME){
+				archiveDissatisfiedCars.add(queue.get(i));
+				queue.remove(i);
+			}
+		}
 	}
 	
 	/**
