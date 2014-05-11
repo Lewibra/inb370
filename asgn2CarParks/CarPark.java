@@ -44,6 +44,11 @@ public class CarPark {
 	private int maxSmallSpaces;
 	private int maxBikeSpaces;
 	private int maxQueueLength;
+	private int numCars;
+	private int numSmall;
+	private int numMotorCycles;
+	private boolean isFull;
+	private boolean isEmpty;
 
 	
 	/**
@@ -80,6 +85,7 @@ public class CarPark {
 	 * @throws SimulationException if one or more departing vehicles are not in the car park when operation applied
 	 */
 	public void archiveDepartingVehicles(int time,boolean force) throws VehicleException, SimulationException {
+		
 	}
 		
 	/**
@@ -104,6 +110,10 @@ public class CarPark {
 	 * @return true if car park empty, false otherwise
 	 */
 	public boolean carParkEmpty() {
+		if (isEmpty){
+			return true;
+		}
+		return false;
 	}
 	
 	/**
@@ -111,6 +121,10 @@ public class CarPark {
 	 * @return true if car park full, false otherwise
 	 */
 	public boolean carParkFull() {
+		if (isFull){
+			return true;
+		}
+		return false;
 	}
 	
 	/**
@@ -157,6 +171,7 @@ public class CarPark {
 	 * @return number of cars in car park, including small cars
 	 */
 	public int getNumCars() {
+		return numCars;
 	}
 	
 	/**
@@ -165,6 +180,7 @@ public class CarPark {
 	 * 			a small car space
 	 */
 	public int getNumMotorCycles() {
+		return numMotorCycles;
 	}
 	
 	/**
@@ -173,6 +189,7 @@ public class CarPark {
 	 * 		   not occupying a small car space. 
 	 */
 	public int getNumSmallCars() {
+		return numSmall;
 	}
 	
 	/**
