@@ -42,9 +42,9 @@ import asgn2Vehicles.Vehicle;
 public class CarPark {
 	
 	private int maxCarSpaces;
-	private int maxSmallSpaces;
-	private int maxBikeSpaces;
-	private int maxQueueLength;
+	private int maxSmallCarSpaces;
+	private int maxMotorCycleSpaces;
+	private int maxQueueSize;
 	private int numCars;
 	private int numSmall;
 	private int numMotorCycles;
@@ -74,9 +74,9 @@ public class CarPark {
 	 */
 	public CarPark(int maxCarSpaces,int maxSmallCarSpaces, int maxMotorCycleSpaces, int maxQueueSize) {
 		maxCarSpaces = this.maxCarSpaces;
-		maxSmallSpaces = maxSmallCarSpaces;
-		maxBikeSpaces = maxMotorCycleSpaces;
-		maxQueueLength = maxQueueSize;
+		maxSmallCarSpaces = this.maxSmallCarSpaces;
+		maxMotorCycleSpaces = this.maxMotorCycleSpaces;
+		maxQueueSize = this.maxQueueSize;
 	}
 
 	/**
@@ -330,6 +330,7 @@ public class CarPark {
 		else if(queueFull()){
 			throw new SimulationException("queue is full");
 		}
+		
 	}
 
 	/**
