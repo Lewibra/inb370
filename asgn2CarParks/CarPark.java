@@ -48,8 +48,10 @@ public class CarPark {
 	private int numCars;
 	private int numSmall;
 	private int numMotorCycles;
-	private boolean isFull;
-	private boolean isEmpty;
+	private boolean parkIsFull;
+	private boolean parkIsEmpty;
+	private boolean queueIsFull;
+	private boolean queueIsEmpty;
 
 	
 	/**
@@ -112,7 +114,7 @@ public class CarPark {
 	 * @return true if car park empty, false otherwise
 	 */
 	public boolean carParkEmpty() {
-		if (isEmpty){
+		if (parkIsEmpty){
 			return true;
 		}
 		return false;
@@ -123,7 +125,7 @@ public class CarPark {
 	 * @return true if car park full, false otherwise
 	 */
 	public boolean carParkFull() {
-		if (isFull){
+		if (parkIsFull){
 			return true;
 		}
 		return false;
@@ -280,6 +282,10 @@ public class CarPark {
 	 * @return true if queue empty, false otherwise
 	 */
 	public boolean queueEmpty() {
+		if (queueIsEmpty){
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -287,6 +293,10 @@ public class CarPark {
 	 * @return true if queue full, false otherwise
 	 */
 	public boolean queueFull() {
+		if (queueIsFull){
+			return true;
+		}
+		return false;
 	}
 	
 	/**
@@ -314,6 +324,12 @@ public class CarPark {
 	 * @throws VehicleException if vehicle creation violates constraints 
 	 */
 	public void tryProcessNewVehicles(int time,Simulator sim) throws VehicleException, SimulationException {
+		if(numSmall + numCars == maxCarSpaces){
+			throw new SimulationException("Car Park is full");
+		}
+		else if(queueFull()){
+			throw new SimulationException("queue is full");
+		}
 	}
 
 	/**
