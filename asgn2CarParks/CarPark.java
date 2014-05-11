@@ -89,7 +89,7 @@ public class CarPark {
 	 * 						 restricted to small cars
 	 * @param maxMotorCycleSpaces maximum number of spaces allocated to MotorCycles
 	 * @param maxQueueSize maximum number of vehicles allowed to queue
-	 * @author kyleannett, Lewis
+	 * @author kyleannett
 	 */
 	public CarPark(int maxCarSpaces,int maxSmallCarSpaces, int maxMotorCycleSpaces, int maxQueueSize) {
 		maxCarSpaces = this.maxCarSpaces;
@@ -97,11 +97,9 @@ public class CarPark {
 		maxMotorCycleSpaces = this.maxMotorCycleSpaces;
 		maxQueueSize = this.maxQueueSize;
 		
-		archivedCars = new ArrayList<Vehicle>();
-		queue = new ArrayList<Vehicle>(maxQueueSize);
-		smallCarArray = new Car[maxCarSpaces];
-		carArray = new Car[maxSmallCarSpaces];
-		bikeArray = new MotorCycle[maxMotorCycleSpaces];
+		archivedCars = new ArrayList();
+		queue = new ArrayList();
+		carParkList = new ArrayList();
 	}
 
 	/**
@@ -135,8 +133,21 @@ public class CarPark {
 	 * Archive vehicles which have stayed in the queue too long 
 	 * @param time int holding current simulation time 
 	 * @throws VehicleException if one or more vehicles not in the correct state or if timing constraints are violated
+	 * @author kyleannett
 	 */
 	public void archiveQueueFailures(int time) throws VehicleException {
+		for(int i = 0; i < queue.size(); i++){
+			if((queue.get(i).isQueued() != true)){
+				throw new VehicleException("vehicle in the wrong state");
+			}
+			else if(time > 0 || time > Constants.CLOSING_TIME){
+				throw new VehicleException("vehicle has been in the queue for too long");
+			}
+			else if(time > Constants.MAXIMUM_QUEUE_TIME){
+				archiveDissatisfiedCars.add(queue.get(i));
+				queue.remove(i);
+			}
+		}
 	}
 	
 	/**
@@ -353,7 +364,6 @@ public class CarPark {
 	 * @param sim Simulation object controlling vehicle creation 
 	 * @throws SimulationException if no suitable spaces available when operation attempted 
 	 * @throws VehicleException if vehicle creation violates constraints 
-	 * @author Lewis
 	 */
 	public void tryProcessNewVehicles(int time,Simulator sim) throws VehicleException, SimulationException {
 		if(numSmall + numCars == maxCarSpaces){
@@ -378,8 +388,11 @@ public class CarPark {
 	
 	private void placeCar(Car v){
 		if (v.isSmall()){
+			if (carParkList. )
 			
 		}
+		
+		
 	}
 	
 
