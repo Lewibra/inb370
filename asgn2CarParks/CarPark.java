@@ -195,6 +195,21 @@ public class CarPark {
 	 * constraints are violated
 	 */
 	public void exitQueue(Vehicle v,int exitTime) throws SimulationException, VehicleException {
+		if(v.isQueued() != true){
+			throw new VehicleException("vehicle not in the queue");
+		}
+		else if(exitTime < 0 || exitTime> Constants.CLOSING_TIME){
+			throw new VehicleException("time constraints are off");
+		}
+		else if(v.getDepartureTime() - v.getArrivalTime() > Constants.MAXIMUM_QUEUE_TIME){
+			v.exitQueuedState(exitTime);
+			archiveDissatisfiedCars.add(v);
+		}
+		else{
+			v.exitQueuedState(exitTime);
+			v.enterParkedState(exitTime, v.getParkingTime());
+			parkVehicle(v, exitTime, v.getParkingTime());
+		}
 	}
 	
 	/**
