@@ -179,8 +179,17 @@ public class CarPark {
 	 * @param v Vehicle to be added 
 	 * @throws SimulationException if queue is full  
 	 * @throws VehicleException if vehicle not in the correct state 
+	 * @author Lewis
 	 */
 	public void enterQueue(Vehicle v) throws SimulationException, VehicleException {
+		if (queue.size() > maxQueueSize){
+			throw new SimulationException("Queue is full");
+		}
+		if (!v.isQueued()){
+			throw new SimulationException("wrong state");
+		}
+		
+		queue.add(v);
 		
 	}
 	
@@ -401,14 +410,6 @@ public class CarPark {
 		
 	}
 	
-	private void placeCar(Car v){
-		if (v.isSmall()){
-			if (carParkList. )
-			
-		}
-		
-		
-	}
 	
 
 	/**
