@@ -11,6 +11,7 @@
 package asgn2CarParks;
 
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -54,8 +55,10 @@ public class CarPark {
 	private boolean queueIsEmpty;
 	
 	private ArrayList<Vehicle> archivedCars;
-	private ArrayList<Vehicle> queue;
-	private ArrayList<Vehicle> carParkList;
+	private Queue<Vehicle> queue;
+	private Car[] smallCarArray;
+	private Car[] carArray;
+	private MotorCycle[] bikeArray;
 	
 	
 	
@@ -70,8 +73,11 @@ public class CarPark {
 				Constants.DEFAULT_MAX_MOTORCYCLE_SPACES,Constants.DEFAULT_MAX_QUEUE_SIZE);
 		
 		archivedCars = new ArrayList();
-		queue = new ArrayList();
-		carParkList = new ArrayList();
+		queue = new LinkedList();
+		
+		smallCarArray = new Car[Constants.DEFAULT_MAX_SMALL_CAR_SPACES];
+		carArray = new Car[Constants.DEFAULT_MAX_CAR_SPACES];
+		bikeArray = new MotorCycle[Constants.DEFAULT_MAX_MOTORCYCLE_SPACES];
 	}
 	
 	/**
@@ -351,6 +357,7 @@ public class CarPark {
 		else if(queueFull()){
 			throw new SimulationException("queue is full");
 		}
+		
 		if(sim.newCarTrial() == true){
 			if (sim.smallCarTrial() == true){
 				Vehicle smallCar = new Car("", time, true);
@@ -363,6 +370,16 @@ public class CarPark {
 		}
 		
 	}
+	
+	private void placeCar(Car v){
+		if (v.isSmall()){
+			if (carParkList. )
+			
+		}
+		
+		
+	}
+	
 
 	/**
 	 * Method to remove vehicle from the carpark. 
