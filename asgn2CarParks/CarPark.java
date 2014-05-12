@@ -160,6 +160,7 @@ public class CarPark {
 	 * @throws VehicleException if vehicle not in the correct state 
 	 */
 	public void enterQueue(Vehicle v) throws SimulationException, VehicleException {
+		
 	}
 	
 	
@@ -349,6 +350,16 @@ public class CarPark {
 		}
 		else if(queueFull()){
 			throw new SimulationException("queue is full");
+		}
+		if(sim.newCarTrial() == true){
+			if (sim.smallCarTrial() == true){
+				Vehicle smallCar = new Car("", time, true);
+			}
+			Vehicle normalCar = new Car("", time, false);
+			
+		}else if (sim.motorCycleTrial() == true){
+			Vehicle motorCycle = new MotorCycle("", time);
+			
 		}
 		
 	}
