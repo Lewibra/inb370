@@ -52,6 +52,13 @@ public class CarPark {
 	private boolean parkIsEmpty;
 	private boolean queueIsFull;
 	private boolean queueIsEmpty;
+	
+	private ArrayList<Vehicle> archivedCars;
+	private ArrayList<Vehicle> queue;
+	private ArrayList<Vehicle> carParkList;
+	
+	
+	
 
 	
 	/**
@@ -61,6 +68,10 @@ public class CarPark {
 	public CarPark() {
 		this(Constants.DEFAULT_MAX_CAR_SPACES,Constants.DEFAULT_MAX_SMALL_CAR_SPACES,
 				Constants.DEFAULT_MAX_MOTORCYCLE_SPACES,Constants.DEFAULT_MAX_QUEUE_SIZE);
+		
+		archivedCars = new ArrayList();
+		queue = new ArrayList();
+		carParkList = new ArrayList();
 	}
 	
 	/**
@@ -77,6 +88,10 @@ public class CarPark {
 		maxSmallCarSpaces = this.maxSmallCarSpaces;
 		maxMotorCycleSpaces = this.maxMotorCycleSpaces;
 		maxQueueSize = this.maxQueueSize;
+		
+		archivedCars = new ArrayList();
+		queue = new ArrayList();
+		carParkList = new ArrayList();
 	}
 
 	/**
