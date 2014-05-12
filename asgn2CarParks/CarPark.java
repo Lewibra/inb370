@@ -49,6 +49,9 @@ public class CarPark {
 	private int numCars;
 	private int numSmall;
 	private int numMotorCycles;
+	private int numParkedNormal=0;
+	private int numParkedSmall=0;
+	private int numParkedCycle=0;
 	private boolean parkIsFull;
 	private boolean parkIsEmpty;
 	private boolean queueIsFull;
@@ -146,7 +149,19 @@ public class CarPark {
 			else if(time > Constants.MAXIMUM_QUEUE_TIME){
 				archiveDissatisfiedCars.add(queue.get(i));
 				queue.remove(i);
+				for(int j = 0; j < queue.size(); j++){
+					if((queue.get(j) instanceof Car)){
+						if(((Car)queue.get(j)).isSmall()){
+							numSmall--;
+						}else {
+						numCars--;
+						}
+					}else {
+						numMotorCycles--;
+					}
 			}
+			
+		}
 		}
 	}
 	
@@ -317,6 +332,7 @@ public class CarPark {
 	 * @return number of vehicles in the queue
 	 */
 	public int numVehiclesInQueue() {
+		return queue.size();
 	}
 	
 	/**
@@ -330,6 +346,16 @@ public class CarPark {
 	 * @throws VehicleException if vehicle not in the correct state or timing constraints are violated
 	 */
 	public void parkVehicle(Vehicle v, int time, int intendedDuration) throws SimulationException, VehicleException {
+		if ((numParkedNormal + numParkedSmall + numParkedCycle) > (maxCarSpaces + maxSmallCarSpaces + maxMotorCycleSpaces)){
+			throw new SimulationException("Car park is full!");
+		}
+		if (v.isParked()||v.wasParked()||v.isSatisfied() !=true||v.getArrivalTime() > Constants.CLOSING_TIME){
+			throw new VehicleException("vehicle exception thrown");
+		}
+		
+		
+
+		
 	}
 
 	/**
@@ -370,8 +396,25 @@ public class CarPark {
 	 * type in the car park under the parking policy in the class header.  
 	 * @param v Vehicle to be stored. 
 	 * @return true if space available for v, false otherwise 
+	 * @author kyle/lewis
 	 */
 	public boolean spacesAvailable(Vehicle v) {
+		if (v instanceof Car){
+			if(((Car)v).isSmall()){
+				if(numParkedSmall < maxSmallCarSpaces){
+					return true;
+				}
+				else if(numParkedNormal < maxCarSpaces){
+					return true;
+				}
+			}			
+		}
+		else if(v instanceof MotorCycle){
+			if(numParkedCycle > maxMotorCycleSpaces){
+				return true;
+			}
+		}
+		return false;
 	}
 
 
@@ -400,13 +443,21 @@ public class CarPark {
 		if(sim.newCarTrial() == true){
 			if (sim.smallCarTrial() == true){
 				Vehicle smallCar = new Car("", time, true);
+				parkVehicle(smallCar, time, smallCar.getParkingTime());
+				numSmall++;
 			}
-			Vehicle normalCar = new Car("", time, false);
-			
+			else{
+				Vehicle normalCar = new Car("", time, false);
+				parkVehicle(normalCar, time, normalCar.getParkingTime());
+				numCars++;
+			}
 		}else if (sim.motorCycleTrial() == true){
 			Vehicle motorCycle = new MotorCycle("", time);
-			
+			parkVehicle(motorCycle, time, motorCycle.getParkingTime());
+			numMotorCycles++;
 		}
+		
+		
 		
 	}
 	
