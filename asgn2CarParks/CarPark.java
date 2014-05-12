@@ -55,7 +55,7 @@ public class CarPark {
 	private boolean queueIsEmpty;
 	
 	private ArrayList<Vehicle> archivedCars;
-	private Queue<Vehicle> queue;
+	private ArrayList<Vehicle> queue;
 	private Car[] smallCarArray;
 	private Car[] carArray;
 	private MotorCycle[] bikeArray;
@@ -72,12 +72,7 @@ public class CarPark {
 		this(Constants.DEFAULT_MAX_CAR_SPACES,Constants.DEFAULT_MAX_SMALL_CAR_SPACES,
 				Constants.DEFAULT_MAX_MOTORCYCLE_SPACES,Constants.DEFAULT_MAX_QUEUE_SIZE);
 		
-		archivedCars = new ArrayList();
-		queue = new LinkedList();
-		
-		smallCarArray = new Car[Constants.DEFAULT_MAX_SMALL_CAR_SPACES];
-		carArray = new Car[Constants.DEFAULT_MAX_CAR_SPACES];
-		bikeArray = new MotorCycle[Constants.DEFAULT_MAX_MOTORCYCLE_SPACES];
+
 	}
 	
 	/**
@@ -87,7 +82,7 @@ public class CarPark {
 	 * 						 restricted to small cars
 	 * @param maxMotorCycleSpaces maximum number of spaces allocated to MotorCycles
 	 * @param maxQueueSize maximum number of vehicles allowed to queue
-	 * @author kyleannett
+	 * @author kyleannett, Lewis
 	 */
 	public CarPark(int maxCarSpaces,int maxSmallCarSpaces, int maxMotorCycleSpaces, int maxQueueSize) {
 		maxCarSpaces = this.maxCarSpaces;
@@ -95,9 +90,11 @@ public class CarPark {
 		maxMotorCycleSpaces = this.maxMotorCycleSpaces;
 		maxQueueSize = this.maxQueueSize;
 		
-		archivedCars = new ArrayList();
-		queue = new ArrayList();
-		carParkList = new ArrayList();
+		archivedCars = new ArrayList<Vehicle>();
+		queue = new ArrayList<Vehicle>(maxQueueSize);
+		smallCarArray = new Car[maxCarSpaces];
+		carArray = new Car[maxSmallCarSpaces];
+		bikeArray = new MotorCycle[maxMotorCycleSpaces];
 	}
 
 	/**
@@ -349,6 +346,7 @@ public class CarPark {
 	 * @param sim Simulation object controlling vehicle creation 
 	 * @throws SimulationException if no suitable spaces available when operation attempted 
 	 * @throws VehicleException if vehicle creation violates constraints 
+	 * @author Lewis
 	 */
 	public void tryProcessNewVehicles(int time,Simulator sim) throws VehicleException, SimulationException {
 		if(numSmall + numCars == maxCarSpaces){
@@ -373,11 +371,8 @@ public class CarPark {
 	
 	private void placeCar(Car v){
 		if (v.isSmall()){
-			if (carParkList. )
 			
 		}
-		
-		
 	}
 	
 
