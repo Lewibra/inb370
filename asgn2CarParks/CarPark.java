@@ -112,8 +112,13 @@ public class CarPark {
 	 * away
 	 * @param v Vehicle to be archived
 	 * @throws SimulationException if vehicle is currently queued or parked
+	 * @author Lewis
 	 */
 	public void archiveNewVehicle(Vehicle v) throws SimulationException {
+		if (v.isParked() == true || v.isQueued() == true){
+			throw new SimulationException("Can't archive this vehicle");
+		}
+		archivedCars.add(v);
 	}
 	
 	/**
