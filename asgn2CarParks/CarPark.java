@@ -86,7 +86,7 @@ public class CarPark {
 	 * @throws SimulationException if one or more departing vehicles are not in the car park when operation applied
 	 */
 	public void archiveDepartingVehicles(int time,boolean force) throws VehicleException, SimulationException {
-		
+		boolean check = Vehicle.isParked();
 	}
 		
 	/**
