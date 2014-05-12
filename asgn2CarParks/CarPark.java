@@ -55,6 +55,7 @@ public class CarPark {
 	private boolean queueIsEmpty;
 	
 	private ArrayList<Vehicle> archivedCars;
+	private ArrayList<Vehicle> archiveDissatisfiedCars;
 	private ArrayList<Vehicle> queue;
 	private Car[] smallCarArray;
 	private Car[] carArray;
@@ -72,7 +73,13 @@ public class CarPark {
 		this(Constants.DEFAULT_MAX_CAR_SPACES,Constants.DEFAULT_MAX_SMALL_CAR_SPACES,
 				Constants.DEFAULT_MAX_MOTORCYCLE_SPACES,Constants.DEFAULT_MAX_QUEUE_SIZE);
 		
-
+		archivedCars = new ArrayList();
+		archiveDissatisfiedCars  = new ArrayList();
+		queue = new ArrayList();
+		
+		smallCarArray = new Car[Constants.DEFAULT_MAX_SMALL_CAR_SPACES];
+		carArray = new Car[Constants.DEFAULT_MAX_CAR_SPACES];
+		bikeArray = new MotorCycle[Constants.DEFAULT_MAX_MOTORCYCLE_SPACES];
 	}
 	
 	/**
