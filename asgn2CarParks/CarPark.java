@@ -57,12 +57,16 @@ public class CarPark {
 	private boolean queueIsFull;
 	private boolean queueIsEmpty;
 	
+	private int carIdCount = 0;
+	private int bikeIdCount = 0;
+	private String idString;
+	
 	private ArrayList<Vehicle> archivedCars;
 	private ArrayList<Vehicle> archiveDissatisfiedCars;
 	private ArrayList<Vehicle> queue;
-	private Car[] smallCarArray;
-	private Car[] carArray;
-	private MotorCycle[] bikeArray;
+	private ArrayList<Vehicle> smallCarArray;
+	private ArrayList<Vehicle> carArray;
+	private ArrayList<Vehicle> bikeArray;
 	
 	
 	
@@ -76,13 +80,18 @@ public class CarPark {
 		this(Constants.DEFAULT_MAX_CAR_SPACES,Constants.DEFAULT_MAX_SMALL_CAR_SPACES,
 				Constants.DEFAULT_MAX_MOTORCYCLE_SPACES,Constants.DEFAULT_MAX_QUEUE_SIZE);
 		
+		maxCarSpaces = Constants.DEFAULT_MAX_CAR_SPACES;
+		maxSmallCarSpaces = Constants.DEFAULT_MAX_CAR_SPACES;
+		maxMotorCycleSpaces = Constants.DEFAULT_MAX_MOTORCYCLE_SPACES;
+		maxQueueSize = Constants.DEFAULT_MAX_QUEUE_SIZE;
+		
 		archivedCars = new ArrayList();
 		archiveDissatisfiedCars  = new ArrayList();
 		queue = new ArrayList();
 		
-		smallCarArray = new Car[Constants.DEFAULT_MAX_SMALL_CAR_SPACES];
-		carArray = new Car[Constants.DEFAULT_MAX_CAR_SPACES];
-		bikeArray = new MotorCycle[Constants.DEFAULT_MAX_MOTORCYCLE_SPACES];
+		smallCarArray = new ArrayList();
+		carArray = new ArrayList();
+		bikeArray = new ArrayList();
 	}
 	
 	/**
@@ -143,7 +152,7 @@ public class CarPark {
 			if((queue.get(i).isQueued() != true)){
 				throw new VehicleException("vehicle in the wrong state");
 			}
-			else if(time > 0 || time > Constants.CLOSING_TIME){
+			else if(time < 0 || time > Constants.CLOSING_TIME){
 				throw new VehicleException("vehicle has been in the queue for too long");
 			}
 			else if(time > Constants.MAXIMUM_QUEUE_TIME){
@@ -442,17 +451,24 @@ public class CarPark {
 		
 		if(sim.newCarTrial() == true){
 			if (sim.smallCarTrial() == true){
-				Vehicle smallCar = new Car("", time, true);
+				carIdCount++;
+				idString = "C" + carIdCount;
+				Vehicle smallCar = new Car(idString, time, true);
 				parkVehicle(smallCar, time, smallCar.getParkingTime());
 				numSmall++;
+				
 			}
 			else{
-				Vehicle normalCar = new Car("", time, false);
+				carIdCount++;
+				idString = "SC" + carIdCount;
+				Vehicle normalCar = new Car(idString, time, false);
 				parkVehicle(normalCar, time, normalCar.getParkingTime());
 				numCars++;
 			}
 		}else if (sim.motorCycleTrial() == true){
-			Vehicle motorCycle = new MotorCycle("", time);
+			bikeIdCount++;
+			idString = "B" + bikeIdCount;
+			Vehicle motorCycle = new MotorCycle(idString, time);
 			parkVehicle(motorCycle, time, motorCycle.getParkingTime());
 			numMotorCycles++;
 		}
@@ -472,6 +488,26 @@ public class CarPark {
 	 * @throws SimulationException if vehicle is not in car park
 	 */
 	public void unparkVehicle(Vehicle v,int departureTime) throws VehicleException, SimulationException {
+		if(v.isQueued()||!v.isParked()||v.getDepartureTime() < 0){
+			throw new VehicleException("Invalid Shit Brah");
+		}
+		else if(v.isQueued()!=true && v.isParked()!=true){
+			throw new SimulationException("vehicle does not exist brah");
+		}
+		v.exitParkedState(departureTime);
+		if (v instanceof Car){
+			if (((Car) v).isSmall()){
+				for(int i=0;i<smallCarArray.size();i++){
+					if (smallCarArray.get(i).getVehID() == v.getVehID()){
+						smallCarArray.remove(i);
+					}
+				}
+			}else{
+				
+			}
+		}else{
+			
+		}
 	}
 	
 	/**
