@@ -67,6 +67,7 @@ public class CarPark {
 	private ArrayList<Vehicle> smallCarArray;
 	private ArrayList<Vehicle> carArray;
 	private ArrayList<Vehicle> bikeArray;
+	private ArrayList<Vehicle> carParkList;
 	
 	
 	
@@ -85,13 +86,13 @@ public class CarPark {
 		maxMotorCycleSpaces = Constants.DEFAULT_MAX_MOTORCYCLE_SPACES;
 		maxQueueSize = Constants.DEFAULT_MAX_QUEUE_SIZE;
 		
-		archivedCars = new ArrayList();
-		archiveDissatisfiedCars  = new ArrayList();
-		queue = new ArrayList();
+		archivedCars = new ArrayList<Vehicle>();
+		archiveDissatisfiedCars  = new ArrayList<Vehicle>();
+		queue = new ArrayList<Vehicle>();
 		
-		smallCarArray = new ArrayList();
-		carArray = new ArrayList();
-		bikeArray = new ArrayList();
+		smallCarArray = new ArrayList<Vehicle>();
+		carArray = new ArrayList<Vehicle>();
+		bikeArray = new ArrayList<Vehicle>();
 	}
 	
 	/**
@@ -109,9 +110,9 @@ public class CarPark {
 		maxMotorCycleSpaces = this.maxMotorCycleSpaces;
 		maxQueueSize = this.maxQueueSize;
 		
-		archivedCars = new ArrayList();
-		queue = new ArrayList();
-		carParkList = new ArrayList();
+		archivedCars = new ArrayList<Vehicle>();
+		queue = new ArrayList<Vehicle>();
+		carParkList = new ArrayList<Vehicle>();
 	}
 
 	/**
