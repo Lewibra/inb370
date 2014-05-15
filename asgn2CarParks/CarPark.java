@@ -61,7 +61,7 @@ public class CarPark {
 	private int bikeIdCount = 0;
 	private String idString;
 	
-	private ArrayList<Vehicle> archivedCars;
+	private ArrayList<Vehicle> archivedVehicles;
 	private ArrayList<Vehicle> archiveDissatisfiedCars;
 	private ArrayList<Vehicle> queue;
 	private ArrayList<Vehicle> smallCarArray;
@@ -86,7 +86,7 @@ public class CarPark {
 		maxMotorCycleSpaces = Constants.DEFAULT_MAX_MOTORCYCLE_SPACES;
 		maxQueueSize = Constants.DEFAULT_MAX_QUEUE_SIZE;
 		
-		archivedCars = new ArrayList<Vehicle>();
+		archivedVehicles = new ArrayList<Vehicle>();
 		archiveDissatisfiedCars  = new ArrayList<Vehicle>();
 		queue = new ArrayList<Vehicle>();
 		
@@ -110,7 +110,7 @@ public class CarPark {
 		maxMotorCycleSpaces = this.maxMotorCycleSpaces;
 		maxQueueSize = this.maxQueueSize;
 		
-		archivedCars = new ArrayList<Vehicle>();
+		archivedVehicles = new ArrayList<Vehicle>();
 		queue = new ArrayList<Vehicle>();
 		carParkList = new ArrayList<Vehicle>();
 	}
@@ -128,16 +128,19 @@ public class CarPark {
 		for (int i = 0; i < carArray.size(); i++){
 			if (carArray.get(i).getDepartureTime() == time){
 				carArray.get(i).exitParkedState(time);
+				archivedVehicles.add(carArray.get(i));
 			}
 		}
 		for (int i = 0; i < bikeArray.size(); i++){
 			if (bikeArray.get(i).getDepartureTime() == time){
 				bikeArray.get(i).exitParkedState(time);
+				archivedVehicles.add(bikeArray.get(i));
 			}
 		}
 		for (int i = 0; i < smallCarArray.size(); i++){
 			if (smallCarArray.get(i).getDepartureTime() == time){
 				smallCarArray.get(i).exitParkedState(time);
+				archivedVehicles.add(smallCarArray.get(i));
 			}
 		}
 		
@@ -154,7 +157,7 @@ public class CarPark {
 		if (v.isParked() == true || v.isQueued() == true){
 			throw new SimulationException("Can't archive this vehicle");
 		}
-		archivedCars.add(v);
+		archivedVehicles.add(v);
 	}
 	
 	/**
