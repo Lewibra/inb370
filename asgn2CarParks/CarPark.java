@@ -122,10 +122,25 @@ public class CarPark {
 	 * @param force boolean forcing departure to clear car park 
 	 * @throws VehicleException if vehicle to be archived is not in the correct state 
 	 * @throws SimulationException if one or more departing vehicles are not in the car park when operation applied
+	 * @author Lewis
 	 */
 	public void archiveDepartingVehicles(int time,boolean force) throws VehicleException, SimulationException {
-		Vehicle vehicle = new Vehicle();
-		boolean check = Vehicle.isParked();
+		for (int i = 0; i < carArray.size(); i++){
+			if (carArray.get(i).getDepartureTime() == time){
+				carArray.get(i).exitParkedState(time);
+			}
+		}
+		for (int i = 0; i < bikeArray.size(); i++){
+			if (bikeArray.get(i).getDepartureTime() == time){
+				bikeArray.get(i).exitParkedState(time);
+			}
+		}
+		for (int i = 0; i < smallCarArray.size(); i++){
+			if (smallCarArray.get(i).getDepartureTime() == time){
+				smallCarArray.get(i).exitParkedState(time);
+			}
+		}
+		
 	}
 		
 	/**
