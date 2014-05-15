@@ -52,6 +52,7 @@ public class CarPark {
 	private int numParkedNormal=0;
 	private int numParkedSmall=0;
 	private int numParkedCycle=0;
+	
 	private boolean parkIsFull;
 	private boolean parkIsEmpty;
 	private boolean queueIsFull;
@@ -63,10 +64,12 @@ public class CarPark {
 	
 	private ArrayList<Vehicle> archivedVehicles;
 	private ArrayList<Vehicle> archiveDissatisfiedCars;
+	
 	private ArrayList<Vehicle> queue;
 	private ArrayList<Vehicle> smallCarArray;
 	private ArrayList<Vehicle> carArray;
 	private ArrayList<Vehicle> bikeArray;
+	
 	private ArrayList<Vehicle> carParkList;
 	
 	
@@ -131,12 +134,14 @@ public class CarPark {
 				archivedVehicles.add(carArray.get(i));
 			}
 		}
+		
 		for (int i = 0; i < bikeArray.size(); i++){
 			if (bikeArray.get(i).getDepartureTime() == time){
 				bikeArray.get(i).exitParkedState(time);
 				archivedVehicles.add(bikeArray.get(i));
 			}
 		}
+		
 		for (int i = 0; i < smallCarArray.size(); i++){
 			if (smallCarArray.get(i).getDepartureTime() == time){
 				smallCarArray.get(i).exitParkedState(time);
@@ -372,6 +377,7 @@ public class CarPark {
 	 * @param intendedDuration int holding intended duration of stay 
 	 * @throws SimulationException if no suitable spaces are available for parking 
 	 * @throws VehicleException if vehicle not in the correct state or timing constraints are violated
+	 * @author Lewis
 	 */
 	public void parkVehicle(Vehicle v, int time, int intendedDuration) throws SimulationException, VehicleException {
 		if ((numParkedNormal + numParkedSmall + numParkedCycle) > (maxCarSpaces + maxSmallCarSpaces + maxMotorCycleSpaces)){
@@ -380,6 +386,28 @@ public class CarPark {
 		if (v.isParked()||v.wasParked()||v.isSatisfied() !=true||v.getArrivalTime() > Constants.CLOSING_TIME){
 			throw new VehicleException("vehicle exception thrown");
 		}
+		
+		if (v instanceof Car){
+			if (((Car) v).isSmall()){
+				if (smallCarArray.size() < maxSmallCarSpaces){
+					carArray.add(v);
+				}else{
+					smallCarArray.add(v);
+				}
+			}else {
+				if (carArray.size() < maxCarSpaces){
+					carArray.add(v);
+				}
+				
+			}
+		}else if (v instanceof MotorCycle) {
+			if (bikeArray.size() < maxMotorCycleSpaces){
+				bikeArray.add(v);
+			} else if (smallCarArray.size() < maxSmallCarSpaces) {
+				 smallCarArray.add(v);
+			}
+		}
+		
 		
 		
 
