@@ -425,6 +425,13 @@ public class CarPark {
 	 * @throws VehicleException if state is incorrect, or timing constraints are violated
 	 */
 	public void processQueue(int time, Simulator sim) throws VehicleException, SimulationException {
+		
+		if (spacesAvailable(queue.get(0))){
+			parkVehicle(queue.get(0), time, queue.get(0).getDepartureTime());
+			queue.remove(0);
+		}
+		archiveQueueFailures(time);
+		
 	}
 
 	/**
