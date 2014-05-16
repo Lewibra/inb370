@@ -113,6 +113,7 @@ public class CarPark {
 		maxMotorCycleSpaces = this.maxMotorCycleSpaces;
 		maxQueueSize = this.maxQueueSize;
 		
+		
 		archivedVehicles = new ArrayList<Vehicle>();
 		queue = new ArrayList<Vehicle>();
 		carParkList = new ArrayList<Vehicle>();
@@ -238,6 +239,7 @@ public class CarPark {
 		}
 		
 		queue.add(v);
+		v.enterQueuedState();
 		
 	}
 	
@@ -430,10 +432,7 @@ public class CarPark {
 	 * @return true if queue empty, false otherwise
 	 */
 	public boolean queueEmpty() {
-		if (queueIsEmpty){
-			return true;
-		}
-		return false;
+		return queueIsEmpty;
 	}
 
 	/**
@@ -441,10 +440,7 @@ public class CarPark {
 	 * @return true if queue full, false otherwise
 	 */
 	public boolean queueFull() {
-		if (queueIsFull){
-			return true;
-		}
-		return false;
+		return queueIsFull;
 	}
 	
 	/**
@@ -487,6 +483,7 @@ public class CarPark {
 	 * @param sim Simulation object controlling vehicle creation 
 	 * @throws SimulationException if no suitable spaces available when operation attempted 
 	 * @throws VehicleException if vehicle creation violates constraints 
+	 * @author Lewis
 	 */
 	public void tryProcessNewVehicles(int time,Simulator sim) throws VehicleException, SimulationException {
 		if(numSmall + numCars == maxCarSpaces){
@@ -498,30 +495,58 @@ public class CarPark {
 		
 		if(sim.newCarTrial() == true){
 			if (sim.smallCarTrial() == true){
-				carIdCount++;
 				idString = "C" + carIdCount;
 				Vehicle smallCar = new Car(idString, time, true);
-				parkVehicle(smallCar, time, smallCar.getParkingTime());
-				numSmall++;
+				
+				if (queueFull()){
+					archiveNewVehicle(smallCar);
+					
+				}else if (!spacesAvailable(smallCar)){
+					enterQueue(smallCar);
+					
+				}else{
+					carIdCount++;
+					parkVehicle(smallCar, time, smallCar.getParkingTime());
+					numSmall++;
+				}
 				
 			}
 			else{
-				carIdCount++;
 				idString = "SC" + carIdCount;
 				Vehicle normalCar = new Car(idString, time, false);
-				parkVehicle(normalCar, time, normalCar.getParkingTime());
-				numCars++;
+				
+				if (queueFull()){
+					archiveNewVehicle(normalCar);
+					
+				}else if (!spacesAvailable(normalCar)){
+					enterQueue(normalCar);
+					
+				}else{
+					carIdCount++;
+					parkVehicle(normalCar, time, normalCar.getParkingTime());
+					numCars++;
+				}
+				
+
 			}
 		}else if (sim.motorCycleTrial() == true){
-			bikeIdCount++;
 			idString = "B" + bikeIdCount;
 			Vehicle motorCycle = new MotorCycle(idString, time);
-			parkVehicle(motorCycle, time, motorCycle.getParkingTime());
-			numMotorCycles++;
+			
+			if (queueFull()){
+				archiveNewVehicle(motorCycle);
+				
+			}else if (!spacesAvailable(motorCycle)){
+				enterQueue(motorCycle);
+				
+			}else{
+				bikeIdCount++;
+				parkVehicle(motorCycle, time, motorCycle.getParkingTime());
+				numMotorCycles++;
+			}
+			
+
 		}
-		
-		
-		
 	}
 	
 	
