@@ -202,23 +202,19 @@ public class CarPark {
 	/**
 	 * Simple status showing whether carPark is empty
 	 * @return true if car park empty, false otherwise
+	 * @author Lewis, Kyle
 	 */
 	public boolean carParkEmpty() {
-		if (parkIsEmpty){
-			return true;
-		}
-		return false;
+		return parkIsEmpty;
 	}
 	
 	/**
 	 * Simple status showing whether carPark is full
 	 * @return true if car park full, false otherwise
+	 * @author Lewis, Kyle
 	 */
 	public boolean carParkFull() {
-		if (parkIsFull){
-			return true;
-		}
-		return false;
+		return parkIsFull;
 	}
 	
 	/**
