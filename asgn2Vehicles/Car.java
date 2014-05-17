@@ -40,25 +40,17 @@ public class Car extends Vehicle {
 			throw new VehicleException("cannot arrive before park is open");
 		}
 		vehicleID = vehID;
-		if(small){
-			small = true;
-		}
-		else{
-			small = false;
-		}
+		this.small = small;
 	}
 
 	/**
 	 * Boolean status indicating whether car is small enough for small 
 	 * car parking spaces  
 	 * @return true if small parking space, false otherwise
-	 * @author Kyle
+	 * @author Kyle/lewis
 	 */
 	public boolean isSmall() {
-		if (small){
-			return true;
-		}
-		return false;
+		return small;
 	}
 
 	/* (non-Javadoc)
