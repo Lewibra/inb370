@@ -66,7 +66,7 @@ public class CarTests {
 	public void testIsSmall() throws VehicleException {
 		Car newCar = new Car("1C", 100, true);
 		boolean checkSmall = newCar.isSmall();
-		assertEquals(checkSmall, true);
+		assertTrue(checkSmall);
 	}
 
 }
