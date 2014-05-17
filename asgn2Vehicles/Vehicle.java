@@ -244,24 +244,18 @@ public abstract class Vehicle {
 	 * Boolean status indicating whether vehicle was ever parked
 	 * Will return false for vehicles in queue or turned away 
 	 * @return true if vehicle was or is in a parked state, false otherwise 
-	 * @Kyle
+	 * @author Kyle,Lewis
 	 */
 	public boolean wasParked() {
-		if (checkParked){
-			return true;
-		}
-		return false;
+		return checkParked;
 	}
 
 	/**
 	 * Boolean status indicating whether vehicle was ever queued
 	 * @return true if vehicle was or is in a queued state, false otherwise 
-	 * @Kyle
+	 * @author Kyle,Lewis
 	 */
 	public boolean wasQueued() {
-		if (checkQueued){
-			return true;
-		}
-		return false;
+		return checkQueued;
 	}
 }
