@@ -58,9 +58,10 @@ public class CarPark {
 	
 	private boolean parkIsFull;
 	private boolean parkIsEmpty;
-	private boolean queueIsFull;
+	private boolean queueIsFull = false;
 	private boolean queueIsEmpty;
 	
+	private int queueCount = 0;
 	private int carIdCount = 0;
 	private int bikeIdCount = 0;
 	private int count = 0;
@@ -183,6 +184,9 @@ public class CarPark {
 	 * @author kyleannett, Lewis
 	 */
 	public void archiveQueueFailures(int time) throws VehicleException {
+		
+		ArrayList<Vehicle> queueClone = new ArrayList<Vehicle>();
+		
 		for(int i = 0; i < queue.size(); i++){
 			if((queue.get(i).isQueued() != true)){
 				throw new VehicleException("vehicle in the wrong state");
@@ -190,17 +194,17 @@ public class CarPark {
 			else if(time < 0 || time > Constants.CLOSING_TIME){
 				throw new VehicleException("vehicle has been in the queue for too long");
 			}
-			
-			
-			else {
-				for(int j = 0; j < queue.size(); j++){
-					if(time - queue.get(i).getArrivalTime() > Constants.MAXIMUM_QUEUE_TIME){
-						archiveDissatisfiedCars.add(queue.get(i));
+
+
+		else if (queue.size() > 0){
+				for(Vehicle v : queue){
+					if(time - v.getArrivalTime() > Constants.MAXIMUM_QUEUE_TIME){
+						archiveDissatisfiedCars.add(v);
 						numDissatisfied++;
-						queue.remove(i);
+						queueClone.add(v);
 					}
-					if((queue.get(j) instanceof Car)){
-						if(((Car)queue.get(j)).isSmall()){
+					if(v instanceof Car){
+						if(((Car)v).isSmall()){
 							numSmall--;
 						}else {
 						numCars--;
@@ -211,6 +215,10 @@ public class CarPark {
 			}
 			
 		}
+		}
+		
+		for(Vehicle v : queueClone){
+			queue.remove(v);
 		}
 	}
 	
@@ -251,7 +259,9 @@ public class CarPark {
 		
 		queue.add(v);
 		v.enterQueuedState();
-		
+		if (queue.size() >= maxQueueSize){
+			queueIsFull = true;
+		}
 	}
 	
 	
@@ -441,18 +451,18 @@ public class CarPark {
 		archiveQueueFailures(time);
 		
 		for (Vehicle v : queue){
-			
-			if (!spacesAvailable(v)){
-				throw new SimulationException("There are no suitable spaces to park the first in queue");
-			}
+
 			if (!v.isQueued()){
 				throw new VehicleException("the vehicle is in the wrong state");
 			}
-			if (v.getArrivalTime() != time){
+			if (time < 0 || v.getArrivalTime() > Constants.CLOSING_TIME){
 				throw new VehicleException("Timing constraints are violated!");
 			}
 			
-			if (spacesAvailable(v)){
+			if (spacesAvailable(v)){	
+				if (!spacesAvailable(v)){
+					throw new SimulationException("There are no suitable spaces to park the first in queue");
+				}
 				parkVehicle(v, time, v.getDepartureTime());
 				v.exitParkedState(time);
 				queue.remove(v);
@@ -529,11 +539,11 @@ public class CarPark {
 		if(smallCarArray.size() + carArray.size() > maxCarSpaces){
 			throw new SimulationException("Car Park is full");
 		}
-		else if(queueFull()){
-			throw new SimulationException("queue is full");
-		}
+
 		
+
 		if(sim.newCarTrial()){
+			
 			count++;
 			if (sim.newCarTrial()){
 				idString = "C" + carIdCount;
@@ -542,7 +552,7 @@ public class CarPark {
 				if (queueFull()){
 					archiveNewVehicle(normalCar);
 					
-				}else if (!spacesAvailable(normalCar)){
+				}else if (!spacesAvailable(normalCar) && !queueFull()){
 					enterQueue(normalCar);
 					
 				}else{
@@ -559,7 +569,7 @@ public class CarPark {
 				if (queueFull()){
 					archiveNewVehicle(smallCar);
 					
-				}else if (!spacesAvailable(smallCar)){
+				}else if (!spacesAvailable(smallCar) && !queueFull()){
 					enterQueue(smallCar);
 					
 				}else{
@@ -577,7 +587,7 @@ public class CarPark {
 			if (queueFull()){
 				archiveNewVehicle(motorCycle);
 				
-			}else if (!spacesAvailable(motorCycle)){
+			}else if (!spacesAvailable(motorCycle) && !queueFull()){
 				enterQueue(motorCycle);
 				
 			}else{
