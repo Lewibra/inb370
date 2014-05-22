@@ -25,6 +25,8 @@ import asgn2Vehicles.Car;
  *
  */
 public class CarTests {
+	private String genericId = "1C";
+	private int genericTime = 100;
 
 	/**
 	 * @throws java.lang.Exception
@@ -51,10 +53,16 @@ public class CarTests {
 
 	/**
 	 * Test method for {@link asgn2Vehicles.Car#Car(java.lang.String, int, boolean)}.
+	 * @throws VehicleException
+	 * @author kyleannett 
 	 */
 	@Test
-	public void testCar() {
-		fail("Not yet implemented"); // TODO
+	public void testCar() throws VehicleException {
+		Car newCar = new Car(genericId, genericTime, false);
+		String checkId = newCar.getVehID();
+		int checkTime = newCar.getArrivalTime();
+		assertEquals(checkId, genericId);
+		assertEquals(checkTime, genericTime);
 	}
 
 	/**

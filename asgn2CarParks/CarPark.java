@@ -83,6 +83,8 @@ public class CarPark {
 	
 	
 	
+	
+	
 
 	
 	/**
@@ -525,6 +527,13 @@ public class CarPark {
 	 */
 	@Override
 	public String toString() {
+		return "CarPark [count: " + count
+				+ " numCars: " + numCars
+				+ " numSmallCars: " + numSmall
+				+ " numMotorCycles: " + numMotorCycles
+				+ " queue: " + (queue.size())
+				+ " numDissatisfied: " + numDissatisfied
+				+ " past: " + past.size() + "]";
 	}
 
 	/**
