@@ -86,7 +86,7 @@ public abstract class Vehicle {
 	 * @author Lewis Tracy
 	 */
 	public void enterParkedState(int parkingTime, int intendedDuration) throws VehicleException {
-		if (currentState == vehicleState.PARKED || currentState == vehicleState.QUEUED){
+		if (currentState == vehicleState.PARKED){
 			throw new VehicleException("The vehicle is already parked or queued");
 		}
 		if (parkingTime < 0){
@@ -226,7 +226,7 @@ public abstract class Vehicle {
 	 * @author Lewis
 	 */
 	public boolean isSatisfied() {
-		if (currentState != vehicleState.PARKED || Constants.MAXIMUM_QUEUE_TIME < queuingTime){
+		if (currentState != vehicleState.PARKED && Constants.MAXIMUM_QUEUE_TIME < queuingTime){
 			return true;
 		}
 		

@@ -158,14 +158,19 @@ public class CarPark {
 	 * @author Lewis
 	 */
 	public void archiveDepartingVehicles(int time,boolean force) throws VehicleException, SimulationException {
-		
+		ArrayList<Vehicle> spacesClone = new ArrayList<Vehicle>();
+
 		for (int i = 0; i < spaces.size(); i++){
 				for (Vehicle v : spaces.get(i)){
 					if (v.getDepartureTime() == time){
-						v.exitParkedState(time);
+						spacesClone.add(v);
 						archivedVehicles.add(v);
 					}
 				}
+				for (Vehicle v : spacesClone){
+					unparkVehicle(v, time);
+				}
+				spacesClone.clear();
 
 		}
 		
@@ -193,8 +198,6 @@ public class CarPark {
 	 */
 	public void archiveQueueFailures(int time) throws VehicleException {
 		
-		ArrayList<Vehicle> queueClone = new ArrayList<Vehicle>();
-		
 		for(int i = 0; i < queue.size(); i++){
 			if((queue.get(i).isQueued() != true)){
 				throw new VehicleException("vehicle in the wrong state");
@@ -204,31 +207,18 @@ public class CarPark {
 			}
 
 
-		else if (queue.size() > 0){
-				for(Vehicle v : queue){
-					if(time - v.getArrivalTime() > Constants.MAXIMUM_QUEUE_TIME){
-						archiveDissatisfiedCars.add(v);
-						numDissatisfied++;
-						queueClone.add(v);
-
-						if(v instanceof Car){
-							if(((Car)v).isSmall()){
-								numSmall--;
-							}else {
-							numCars--;
-							}
-						}else {
-							numMotorCycles--;
-						}
-					}
-			}
+			else{
+				Vehicle v;
+				v = queue.get(i);
+				if(time - v.getArrivalTime() > Constants.MAXIMUM_QUEUE_TIME){
+					archiveDissatisfiedCars.add(v);
+					numDissatisfied++;
+					queue.remove(v);
+				}
 			
-		}
+			}
 		}
 		
-		for(Vehicle v : queueClone){
-			queue.remove(v);
-		}
 	}
 	
 	/**
@@ -288,15 +278,10 @@ public class CarPark {
 		else if(exitTime < 0 || exitTime> Constants.CLOSING_TIME){
 			throw new VehicleException("time constraints are off");
 		}
-		else if(v.getDepartureTime() - v.getArrivalTime() > Constants.MAXIMUM_QUEUE_TIME){
-			v.exitQueuedState(exitTime);
-			archiveDissatisfiedCars.add(v);
-		}
-		else{
-			v.exitQueuedState(exitTime);
-			v.enterParkedState(exitTime, v.getParkingTime());
-			parkVehicle(v, exitTime, v.getParkingTime());
-		}
+		v.exitQueuedState(exitTime);
+		queue.remove(v);
+		//archiveDissatisfiedCars.add(v);
+
 	}
 	
 	/**
@@ -413,7 +398,7 @@ public class CarPark {
 		if ((numParkedNormal + numParkedSmall + numParkedCycle) > (maxCarSpaces + maxSmallCarSpaces + maxMotorCycleSpaces)){
 			throw new SimulationException("Car park is full!");
 		}
-		if (v.isParked()||v.wasParked()||v.isSatisfied() !=true||v.getArrivalTime() > Constants.CLOSING_TIME){
+		if (v.isParked()||v.wasParked()||v.getArrivalTime() > Constants.CLOSING_TIME){
 			throw new VehicleException("vehicle exception thrown");
 		}
 		
@@ -453,9 +438,10 @@ public class CarPark {
 	public void processQueue(int time, Simulator sim) throws VehicleException, SimulationException {
 	
 		archiveQueueFailures(time);
-		
-		for (Vehicle v : queue){
-
+		Vehicle v;
+		for (int i = 0; i > queue.size(); i++){
+			v = queue.get(i);
+			
 			if (!v.isQueued()){
 				throw new VehicleException("the vehicle is in the wrong state");
 			}
@@ -467,9 +453,11 @@ public class CarPark {
 				if (!spacesAvailable(v)){
 					throw new SimulationException("There are no suitable spaces to park the first in queue");
 				}
-				parkVehicle(v, time, v.getDepartureTime());
-				v.exitParkedState(time);
-				queue.remove(v);
+				exitQueue(v, time);
+
+				parkVehicle(v, time, sim.setDuration());
+				
+
 			}else{
 				break;
 			}
@@ -530,10 +518,10 @@ public class CarPark {
 	@Override
 	public String toString() {
 		return "CarPark [count: " + count
-				+ " numCars: " + numCars
-				+ " numSmallCars: " + numSmall
-				+ " numMotorCycles: " + numMotorCycles
-				+ " queue: " + (queue.size())
+				+ " numCars: " + carArray.size()
+				+ " numSmallCars: " + smallCarArray.size()
+				+ " numMotorCycles: " + bikeArray.size()
+				+ " queue: " + queue.size()
 				+ " numDissatisfied: " + numDissatisfied
 				+ " past: " + past.size() + "]";
 	}
@@ -643,24 +631,34 @@ public class CarPark {
 	 */
 	public void unparkVehicle(Vehicle v,int departureTime) throws VehicleException, SimulationException {
 		if(v.isQueued()||!v.isParked()||v.getDepartureTime() < 0){
-			throw new VehicleException("Invalid Shit Brah");
+			throw new VehicleException("Invalid stuff Brah");
 		}
 		else if(v.isQueued()!=true && v.isParked()!=true){
 			throw new SimulationException("vehicle does not exist brah");
 		}
+		
 		v.exitParkedState(departureTime);
+		
 		if (v instanceof Car){
+			//remove small cars
 			if (((Car) v).isSmall()){
-				for(int i=0;i<smallCarArray.size();i++){
-					if (smallCarArray.get(i).getVehID() == v.getVehID()){
-						smallCarArray.remove(i);
-					}
+				if (smallCarArray.contains(v)){
+					smallCarArray.remove(v);
+				}else{
+					carArray.remove(v);
 				}
-			}else{
 				
+			//remove cars
+			}else{
+				carArray.remove(v);
 			}
+		//remove bikes
 		}else{
-			
+			if (smallCarArray.contains(v)){
+				smallCarArray.remove(v);
+			}else{
+				bikeArray.remove(v);
+			}
 		}
 	}
 	
