@@ -559,7 +559,25 @@ public class CarPark {
 			queueIsEmpty = true;
 		}
 
-		if(sim.newCarTrial()){
+		if (sim.motorCycleTrial()){
+
+			idString = "B" + bikeIdCount;
+			Vehicle motorCycle = new MotorCycle(idString, time);
+			
+			if (queueFull()){
+				archiveNewVehicle(motorCycle);
+				
+			}else if (!spacesAvailable(motorCycle) && !queueFull()){
+				enterQueue(motorCycle);
+				
+			}else{
+				bikeIdCount++;
+				parkVehicle(motorCycle, time, sim.setDuration());
+				numMotorCycles++;
+				count++;
+			}
+		
+		}else if(sim.newCarTrial()){
 			if (!sim.smallCarTrial()){
 				idString = "C" + carIdCount;
 				Vehicle normalCar = new Car(idString, time, false);
@@ -595,26 +613,8 @@ public class CarPark {
 				}
 			}
 			
-		}else if (sim.motorCycleTrial()){
-
-			idString = "B" + bikeIdCount;
-			Vehicle motorCycle = new MotorCycle(idString, time);
-			
-			if (queueFull()){
-				archiveNewVehicle(motorCycle);
-				
-			}else if (!spacesAvailable(motorCycle) && !queueFull()){
-				enterQueue(motorCycle);
-				
-			}else{
-				bikeIdCount++;
-				parkVehicle(motorCycle, time, sim.setDuration());
-				numMotorCycles++;
-				count++;
-			}
-			
-
 		}
+		
 		
 
 	}

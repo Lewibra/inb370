@@ -227,10 +227,10 @@ public abstract class Vehicle {
 	 */
 	public boolean isSatisfied() {
 		if (currentState != vehicleState.PARKED && Constants.MAXIMUM_QUEUE_TIME < queuingTime){
-			return true;
+			return false;
 		}
 		
-		return false;
+		return true;
 	}
 	
 	/* (non-Javadoc)

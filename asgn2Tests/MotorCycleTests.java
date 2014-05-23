@@ -26,6 +26,7 @@ import asgn2Vehicles.Vehicle;
  */
 public class MotorCycleTests {
 	private String genericId = "1C";
+	private int parkingTime = 20;
 	private int genericArrivalTime = 100;
 	private int genericDepartQueue = 120;
 	private int hour = 60;
@@ -64,7 +65,7 @@ public class MotorCycleTests {
 	 */
 	@Test
 	public void testVehicle() throws VehicleException {
-		Vehicle testVeh = new Vehicle(genericId, genericArrivalTime);
+		Vehicle testVeh = new MotorCycle(genericId, genericArrivalTime);
 	}
 
 	/**
@@ -187,7 +188,7 @@ public class MotorCycleTests {
 		MotorCycle newBike = new MotorCycle(genericId, genericArrivalTime);
 		newBike.enterParkedState(genericArrivalTime, hour);
 		int parkTime = newBike.getParkingTime();
-		assertEquals(parkTime, 0);
+		assertEquals(parkTime, genericArrivalTime);
 	}
 
 	/**
@@ -240,18 +241,21 @@ public class MotorCycleTests {
 	@Test
 	public void testIsSatisfied() throws VehicleException {
 		MotorCycle newBike = new MotorCycle(genericId, genericArrivalTime);
-		newBike.enterParkedState(genericArrivalTime, hour);
-		newBike.exitParkedState(departTime);
+		newBike.enterParkedState(parkingTime, hour);
+
 		boolean checkSatisfied = newBike.isSatisfied();
-		assertEquals(checkSatisfied, true);
+		assertTrue(checkSatisfied);
 	}
 
 	/**
 	 * Test method for {@link asgn2Vehicles.Vehicle#toString()}.
+	 * @throws VehicleException 
 	 */
 	@Test
-	public void testToString() {
-		fail("Not yet implemented"); // TODO
+	public void testToString() throws VehicleException {
+		MotorCycle newBike = new MotorCycle(genericId, genericArrivalTime);
+		nkewBike.toString();
+		//comeback
 	}
 
 }
