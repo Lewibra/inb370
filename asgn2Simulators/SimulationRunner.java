@@ -38,6 +38,8 @@ public class SimulationRunner {
 		this.carPark = carPark;
 		this.sim = sim;
 		this.log = log;
+		
+
 	}
 	
 	
@@ -50,6 +52,8 @@ public class SimulationRunner {
 	 */
 	public void runSimulation() throws VehicleException, SimulationException, IOException {
 		this.log.initialEntry(this.carPark,this.sim);
+		GUISimulator textGui = new GUISimulator("text");
+		
 		for (int time=0; time<=Constants.CLOSING_TIME; time++) {
 			//queue elements exceed max waiting time
 			if (!this.carPark.queueEmpty()) {
@@ -71,6 +75,7 @@ public class SimulationRunner {
 			}
 			//Log progress 
 			this.log.logEntry(time,this.carPark);
+			textGui.updateTextBox(carPark.toString());
 		}
 		this.log.finalise(this.carPark);
 	}

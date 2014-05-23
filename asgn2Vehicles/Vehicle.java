@@ -98,8 +98,8 @@ public abstract class Vehicle {
 		
 		currentState = vehicleState.PARKED;
 		departureTime = parkingTime + intendedDuration;
-		parkingTime = this.parkingTime;
-		intendedDuration = this.intendedDuration;
+		this.parkingTime = parkingTime;
+		this.intendedDuration = intendedDuration;
 		checkParked = true;
 		
 	}
