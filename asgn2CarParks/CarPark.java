@@ -559,6 +559,42 @@ public class CarPark {
 			queueIsEmpty = true;
 		}
 
+
+		if(sim.newCarTrial()){
+			if (!sim.smallCarTrial()){
+				idString = "C" + carIdCount;
+				Vehicle normalCar = new Car(idString, time, false);
+				
+				if (queueFull()){
+					archiveNewVehicle(normalCar);
+					
+				}else if (!spacesAvailable(normalCar) && !queueFull()){
+					enterQueue(normalCar);
+					
+				}else{
+					carIdCount++;
+					parkVehicle(normalCar, time, sim.setDuration());
+					numCars++;
+					count++;
+				}			
+			}
+			idString = "SC" + carIdCount;
+			Vehicle smallCar = new Car(idString, time, true);
+			
+			if (queueFull()){
+				archiveNewVehicle(smallCar);
+				
+			}else if (!spacesAvailable(smallCar) && !queueFull()){
+				enterQueue(smallCar);
+				
+			}else{
+				carIdCount++;
+				parkVehicle(smallCar, time, sim.setDuration());
+				numSmall++;
+				count++;
+			}
+			
+		}
 		if (sim.motorCycleTrial()){
 
 			idString = "B" + bikeIdCount;
@@ -577,42 +613,6 @@ public class CarPark {
 				count++;
 			}
 		
-		}else if(sim.newCarTrial()){
-			if (!sim.smallCarTrial()){
-				idString = "C" + carIdCount;
-				Vehicle normalCar = new Car(idString, time, false);
-				
-				if (queueFull()){
-					archiveNewVehicle(normalCar);
-					
-				}else if (!spacesAvailable(normalCar) && !queueFull()){
-					enterQueue(normalCar);
-					
-				}else{
-					carIdCount++;
-					parkVehicle(normalCar, time, sim.setDuration());
-					numCars++;
-					count++;
-				}			
-			}
-			else{
-				idString = "SC" + carIdCount;
-				Vehicle smallCar = new Car(idString, time, true);
-				
-				if (queueFull()){
-					archiveNewVehicle(smallCar);
-					
-				}else if (!spacesAvailable(smallCar) && !queueFull()){
-					enterQueue(smallCar);
-					
-				}else{
-					carIdCount++;
-					parkVehicle(smallCar, time, sim.setDuration());
-					numSmall++;
-					count++;
-				}
-			}
-			
 		}
 		
 		
