@@ -28,6 +28,8 @@ import asgn2Vehicles.*;
 public class CarParkTests {
 	private String genericId = "1C";
 	private int genericTime = 100;
+	private int ONE_HOUR_ARRIVAL = 60;
+	private boolean small = true;
 
 	/**
 	 * @throws java.lang.Exception
@@ -51,6 +53,11 @@ public class CarParkTests {
 	@Test
 	public void testArchiveDepartingVehicles() throws VehicleException, SimulationException {
 		CarPark testInstance = new CarPark();
+		Vehicle testCar = new Car("TestCar", ONE_HOUR_ARRIVAL, !small);
+		testInstance.parkVehicle(testCar, ONE_HOUR_ARRIVAL, genericTime);
+		testInstance.archiveDepartingVehicles(testCar.getDepartureTime(), false);
+		
+		assertTrue(testInstance.carParkEmpty());
 	}
 
 	/**

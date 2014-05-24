@@ -138,7 +138,7 @@ public abstract class Vehicle {
 			throw new VehicleException("The vehicle has overstayed it's duration");
 		}
 		currentState = vehicleState.ARCHIVED;
-		this.departureTime = departureTime;
+		//this.departureTime = departureTime;
 	}
 
 	/**

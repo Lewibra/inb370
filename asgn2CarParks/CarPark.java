@@ -89,7 +89,7 @@ public class CarPark {
 				Constants.DEFAULT_MAX_MOTORCYCLE_SPACES,Constants.DEFAULT_MAX_QUEUE_SIZE);
 		
 		maxCarSpaces = Constants.DEFAULT_MAX_CAR_SPACES;
-		maxSmallCarSpaces = Constants.DEFAULT_MAX_CAR_SPACES;
+		maxSmallCarSpaces = Constants.DEFAULT_MAX_SMALL_CAR_SPACES;
 		maxMotorCycleSpaces = Constants.DEFAULT_MAX_MOTORCYCLE_SPACES;
 		allSpaces = maxCarSpaces + maxSmallCarSpaces + maxMotorCycleSpaces;
 		
@@ -223,7 +223,7 @@ public class CarPark {
 	 * @author Lewis, Kyle
 	 */
 	public boolean carParkEmpty() {
-		if (count == 0){
+		if (getNumCars() + getNumMotorCycles() == 0 && queueEmpty()){
 			parkIsEmpty = true;
 		}else{
 			parkIsEmpty = false;
@@ -237,7 +237,7 @@ public class CarPark {
 	 * @author Lewis, Kyle
 	 */
 	public boolean carParkFull() {
-		if (count >= allSpaces){
+		if (getNumCars() + getNumMotorCycles() + queue.size() >= allSpaces){
 			parkIsFull = true;
 		}else{
 			parkIsFull = false;
@@ -412,7 +412,7 @@ public class CarPark {
 			if (((Car) v).isSmall()){
 				if (smallCarArray.size() < maxSmallCarSpaces){
 					smallCarArray.add(v);
-				}else{
+				}else if (carArray.size() < maxCarSpaces){
 					carArray.add(v);
 				}
 			}else {
@@ -465,12 +465,12 @@ public class CarPark {
 				
 				if (v instanceof Car){
 					if (((Car)v).isSmall()){
-						status += "|S: Q > P|";
+						status += "|S:Q>P|";
 					}else{
-						status += "|C: Q > P|";
+						status += "|C:Q>P|";
 					}
 				}else{
-					status += "|M: Q > P|";
+					status += "|M:Q>P|";
 				}
 			}else{
 				break;
@@ -565,41 +565,42 @@ public class CarPark {
 
 
 		if(sim.newCarTrial()){
-			if (!sim.smallCarTrial()){
+			if (sim.smallCarTrial()){
+				idString = "SC" + carIdCount;
+				Vehicle smallCar = new Car(idString, time, true);
+				
+				if (queueFull()){
+					archiveNewVehicle(smallCar);
+					status += "|S:N>A|";
+					
+				}else if (!spacesAvailable(smallCar) && !queueFull()){
+					enterQueue(smallCar);
+					status += "|S:N>Q|";
+					
+				}else{
+					carIdCount++;
+					parkVehicle(smallCar, time, sim.setDuration());
+					count++;
+					status += "|S:N>P|";
+				}			
+			}else{
 				idString = "C" + carIdCount;
 				Vehicle normalCar = new Car(idString, time, false);
 				
 				if (queueFull()){
 					archiveNewVehicle(normalCar);
-					status += "|C: N > A|";
+					status += "|C:N>A|";
 					
 				}else if (!spacesAvailable(normalCar) && !queueFull()){
 					enterQueue(normalCar);
-					status += "|C: N > Q|";
+					status += "|S:N>Q|";
 					
 				}else{
 					carIdCount++;
 					parkVehicle(normalCar, time, sim.setDuration());
 					count++;
-					status += "|C: N > P|";
-				}			
-			}
-			idString = "SC" + carIdCount;
-			Vehicle smallCar = new Car(idString, time, true);
-			
-			if (queueFull()){
-				archiveNewVehicle(smallCar);
-				status += "|S: N > A|";
-				
-			}else if (!spacesAvailable(smallCar) && !queueFull()){
-				enterQueue(smallCar);
-				status += "|S: N > Q|";
-				
-			}else{
-				carIdCount++;
-				parkVehicle(smallCar, time, sim.setDuration());
-				count++;
-				status += "|S: N > P|";
+					status += "|C:N>P|";
+				}
 			}
 			
 		}
@@ -610,17 +611,17 @@ public class CarPark {
 			
 			if (queueFull()){
 				archiveNewVehicle(motorCycle);
-				status += "|B: N > A|";
+				status += "|B:N>A|";
 				
 			}else if (!spacesAvailable(motorCycle) && !queueFull()){
 				enterQueue(motorCycle);
-				status += "|B: N > Q|";
+				status += "|B:N>Q|";
 				
 			}else{
 				bikeIdCount++;
 				parkVehicle(motorCycle, time, sim.setDuration());
 				count++;
-				status += "|B: N > P|";
+				status += "|B:N>P|";
 			}
 		
 		}
@@ -657,12 +658,12 @@ public class CarPark {
 				}else{
 					carArray.remove(v);
 				}
-				status += "|S: P > A|";
+				status += "|S:P>A|";
 				
 			//remove cars
 			}else{
 				carArray.remove(v);
-				status += "|C: P > A|";
+				status += "|C:P>A|";
 			}
 		//remove bikes
 		}else{
@@ -671,7 +672,7 @@ public class CarPark {
 			}else{
 				bikeArray.remove(v);
 			}
-			status += "|M: P > A|";
+			status += "|M:P>A|";
 		}
 	}
 	
