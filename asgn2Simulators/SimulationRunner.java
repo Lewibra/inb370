@@ -35,7 +35,7 @@ public class SimulationRunner {
 	 * @param log Log to provide logging services 
 	 */
 	public SimulationRunner(CarPark carPark, Simulator sim,Log log) {
-		this.carPark = new CarPark();
+		this.carPark = new CarPark(100, 30, 30, 10);
 		this.sim = sim;
 		this.log = log;
 		

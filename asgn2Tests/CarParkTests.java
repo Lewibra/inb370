@@ -28,8 +28,6 @@ import asgn2Vehicles.*;
 public class CarParkTests {
 	private String genericId = "1C";
 	private int genericTime = 100;
-	private int ONE_HOUR_ARRIVAL = 60;
-	private boolean small = true;
 
 	/**
 	 * @throws java.lang.Exception
@@ -49,31 +47,52 @@ public class CarParkTests {
 	 * Test method for {@link asgn2CarParks.CarPark#archiveDepartingVehicles(int, boolean)}.
 	 * @throws SimulationException 
 	 * @throws VehicleException 
+	 * @author Kyle Annett
 	 */
 	@Test
 	public void testArchiveDepartingVehicles() throws VehicleException, SimulationException {
 		CarPark testInstance = new CarPark();
-		Vehicle testCar = new Car("TestCar", ONE_HOUR_ARRIVAL, !small);
-		testInstance.parkVehicle(testCar, ONE_HOUR_ARRIVAL, genericTime);
-		testInstance.archiveDepartingVehicles(testCar.getDepartureTime(), false);
+		Car newCar = new Car(genericId, genericTime, false);
+		testInstance.parkVehicle(newCar, genericTime, 200);
+		assertFalse(testInstance.carParkEmpty());
 		
+		testInstance.archiveDepartingVehicles(200, true);
 		assertTrue(testInstance.carParkEmpty());
 	}
 
 	/**
 	 * Test method for {@link asgn2CarParks.CarPark#archiveNewVehicle(asgn2Vehicles.Vehicle)}.
+	 * @throws VehicleException 
+	 * @throws SimulationException 
 	 */
 	@Test
-	public void testArchiveNewVehicle() {
-		fail("Not yet implemented"); // TODO
+	public void testArchiveNewVehicle() throws VehicleException, SimulationException {
+		CarPark testInstance = new CarPark();
+		Car newCar = new Car(genericId, genericTime, false);
+		testInstance.archiveNewVehicle(newCar);
+		assertFalse(newCar.wasParked());
+		assertFalse(newCar.wasQueued());
 	}
 
 	/**
 	 * Test method for {@link asgn2CarParks.CarPark#archiveQueueFailures(int)}.
+	 * @throws VehicleException 
+	 * @throws SimulationException 
 	 */
 	@Test
-	public void testArchiveQueueFailures() {
-		fail("Not yet implemented"); // TODO
+	public void testArchiveQueueFailures() throws VehicleException, SimulationException {
+		CarPark testInstance = new CarPark(1,1,1,4);
+		Car newCar = new Car(genericId, genericTime, false);
+		Car newCar2 = new Car(genericId, genericTime, false);
+		Car newCar3 = new Car(genericId, genericTime, false);
+		Car newCar4 = new Car(genericId, genericTime, false);
+		testInstance.enterQueue(newCar);
+		testInstance.enterQueue(newCar2);
+		testInstance.enterQueue(newCar3);
+		testInstance.enterQueue(newCar4);
+		testInstance.archiveQueueFailures(genericTime);
+		assertTrue(newCar.wasQueued());
+		assertFalse(newCar.wasParked());
 	}
 
 	/**
@@ -96,13 +115,18 @@ public class CarParkTests {
 	public void testCarParkFull() throws VehicleException, SimulationException {
 		CarPark testInstance = new CarPark( 1,1, 1, 1);
 		Car newCar = new Car(genericId, genericTime, false);
+		Car newCar2 = new Car(genericId, genericTime, false);
 		Car newSmallCar = new Car(genericId, genericTime, true);
 		MotorCycle newBike = new MotorCycle(genericId, genericTime);
 		testInstance.parkVehicle(newCar, genericTime, 60);
 		testInstance.parkVehicle(newSmallCar, genericTime, 60);
 		testInstance.parkVehicle(newBike, genericTime, 60);
-		boolean checkFull = testInstance.carParkFull();
-		assertTrue(checkFull);
+		testInstance.parkVehicle(newCar2, genericTime, 60);
+		testInstance.addCount();
+		testInstance.addCount();
+		testInstance.addCount();
+		testInstance.addCount();
+		assertTrue(testInstance.carParkFull());
 	}
 
 	/**
@@ -121,10 +145,17 @@ public class CarParkTests {
 
 	/**
 	 * Test method for {@link asgn2CarParks.CarPark#exitQueue(asgn2Vehicles.Vehicle, int)}.
+	 * @throws VehicleException 
+	 * @throws SimulationException 
+	 * @author Kyle Annett
 	 */
 	@Test
-	public void testExitQueue() {
-		fail("Not yet implemented"); // TODO
+	public void testExitQueue() throws VehicleException, SimulationException {
+		CarPark testInstance = new CarPark( 1,1, 1, 1);
+		Car newCar = new Car(genericId, genericTime, false);
+		testInstance.enterQueue(newCar);
+		testInstance.exitQueue(newCar, 120);
+		assertTrue(newCar.wasQueued());
 	}
 
 	/**
@@ -137,26 +168,56 @@ public class CarParkTests {
 
 	/**
 	 * Test method for {@link asgn2CarParks.CarPark#getNumCars()}.
+	 * @throws VehicleException 
+	 * @throws SimulationException 
 	 */
 	@Test
-	public void testGetNumCars() {
-		fail("Not yet implemented"); // TODO
+	public void testGetNumCars() throws SimulationException, VehicleException {
+		CarPark testInstance = new CarPark( 5,5, 5, 5);
+		Car newCar = new Car(genericId, genericTime, false);
+		Car newCar2 = new Car(genericId, genericTime, false);
+		Car newCar3 = new Car(genericId, genericTime, false);
+		testInstance.parkVehicle(newCar, genericTime, 160);
+		testInstance.parkVehicle(newCar2, 101, 160);
+		testInstance.parkVehicle(newCar3, 102, 160);
+		int count = testInstance.getNumCars();
+		assertEquals(count, 3);
 	}
 
 	/**
 	 * Test method for {@link asgn2CarParks.CarPark#getNumMotorCycles()}.
+	 * @throws VehicleException 
+	 * @throws SimulationException 
 	 */
 	@Test
-	public void testGetNumMotorCycles() {
-		fail("Not yet implemented"); // TODO
+	public void testGetNumMotorCycles() throws SimulationException, VehicleException {
+		CarPark testInstance = new CarPark( 5,5, 5, 5);
+		MotorCycle newBike = new MotorCycle(genericId, genericTime);
+		MotorCycle newBike2 = new MotorCycle(genericId, genericTime);
+		MotorCycle newBike3 = new MotorCycle(genericId, genericTime);
+		testInstance.parkVehicle(newBike, genericTime, 160);
+		testInstance.parkVehicle(newBike2, 101, 160);
+		testInstance.parkVehicle(newBike3, 102, 160);
+		int count = testInstance.getNumMotorCycles();
+		assertEquals(count, 3);
 	}
 
 	/**
 	 * Test method for {@link asgn2CarParks.CarPark#getNumSmallCars()}.
+	 * @throws VehicleException 
+	 * @throws SimulationException 
 	 */
 	@Test
-	public void testGetNumSmallCars() {
-		fail("Not yet implemented"); // TODO
+	public void testGetNumSmallCars() throws SimulationException, VehicleException {
+		CarPark testInstance = new CarPark( 5,5, 5, 5);
+		Car newCar = new Car(genericId, genericTime, true);
+		Car newCar2 = new Car(genericId, genericTime, true);
+		Car newCar3 = new Car(genericId, genericTime, true);
+		testInstance.parkVehicle(newCar, genericTime, 160);
+		testInstance.parkVehicle(newCar2, 101, 160);
+		testInstance.parkVehicle(newCar3, 102, 160);
+		int count = testInstance.getNumSmallCars();
+		assertEquals(count, 3);
 	}
 
 	/**
@@ -177,18 +238,34 @@ public class CarParkTests {
 
 	/**
 	 * Test method for {@link asgn2CarParks.CarPark#numVehiclesInQueue()}.
+	 * @throws VehicleException 
+	 * @throws SimulationException 
+	 * @author Kyle Annett
 	 */
 	@Test
-	public void testNumVehiclesInQueue() {
-		fail("Not yet implemented"); // TODO
+	public void testNumVehiclesInQueue() throws SimulationException, VehicleException {
+		CarPark testInstance = new CarPark( 1,1, 1, 5);
+		Car newCar = new Car(genericId, genericTime, false);
+		Car newCar2 = new Car(genericId, genericTime, false);
+		Car newCar3 = new Car(genericId, genericTime, false);
+		testInstance.enterQueue(newCar);
+		testInstance.enterQueue(newCar2);
+		testInstance.enterQueue(newCar3);
+		assertEquals(testInstance.numVehiclesInQueue(), 3);
 	}
 
 	/**
 	 * Test method for {@link asgn2CarParks.CarPark#parkVehicle(asgn2Vehicles.Vehicle, int, int)}.
+	 * @throws VehicleException 
+	 * @throws SimulationException 
+	 * @author Kyle Annett
 	 */
 	@Test
-	public void testParkVehicle() {
-		fail("Not yet implemented"); // TODO
+	public void testParkVehicle() throws VehicleException, SimulationException {
+		CarPark testInstance = new CarPark( 1,1, 1, 1);
+		Car newCar = new Car(genericId, genericTime, false);
+		testInstance.parkVehicle(newCar, genericTime, 60);
+		assertTrue(newCar.isParked());
 	}
 
 	/**
@@ -201,6 +278,7 @@ public class CarParkTests {
 
 	/**
 	 * Test method for {@link asgn2CarParks.CarPark#queueEmpty()}.
+	 * @author Kyle Annett
 	 */
 	@Test
 	public void testQueueEmpty() {
@@ -210,19 +288,26 @@ public class CarParkTests {
 
 	/**
 	 * Test method for {@link asgn2CarParks.CarPark#queueFull()}.
+	 * @throws VehicleException 
+	 * @throws SimulationException 
+	 * @author Kyle Annett
 	 */
 	@Test
-	public void testQueueFull() {
-		fail("Not yet implemented"); // TODO
+	public void testQueueFull() throws VehicleException, SimulationException {
+		CarPark testInstance = new CarPark( 1,1, 1, 1);
+		Car newCar = new Car(genericId, genericTime, false);
+		testInstance.enterQueue(newCar);
+		assertTrue(testInstance.queueFull());
 	}
 
 	/**
 	 * Test method for {@link asgn2CarParks.CarPark#spacesAvailable(asgn2Vehicles.Vehicle)}.
 	 * @throws VehicleException 
+	 * @author Kyle Annett
 	 */
 	@Test
 	public void testSpacesAvailable() throws VehicleException {
-		CarPark testInstance = new CarPark( 1,1, 1, 1);
+		CarPark testInstance = new CarPark(2, 1, 1, 10);
 		Car newCar = new Car(genericId, genericTime, false);
 		Car newSmallCar = new Car(genericId, genericTime, true);
 		MotorCycle newBike = new MotorCycle(genericId, genericTime);
@@ -236,6 +321,7 @@ public class CarParkTests {
 
 	/**
 	 * Test method for {@link asgn2CarParks.CarPark#toString()}.
+	 * 
 	 */
 	@Test
 	public void testToString() {
@@ -252,10 +338,17 @@ public class CarParkTests {
 
 	/**
 	 * Test method for {@link asgn2CarParks.CarPark#unparkVehicle(asgn2Vehicles.Vehicle, int)}.
+	 * @throws VehicleException 
+	 * @throws SimulationException 
+	 * @author Kyle Annett
 	 */
 	@Test
-	public void testUnparkVehicle() {
-		fail("Not yet implemented"); // TODO
+	public void testUnparkVehicle() throws SimulationException, VehicleException {
+		CarPark testInstance = new CarPark( 1,1, 1, 1);
+		Car newCar = new Car(genericId, genericTime, false);
+		testInstance.parkVehicle(newCar, genericTime, 60);
+		testInstance.unparkVehicle(newCar, 160);
+		assertTrue(newCar.wasParked());
 	}
 
 }

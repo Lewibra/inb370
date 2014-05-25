@@ -88,8 +88,8 @@ public class CarPark {
 		this(Constants.DEFAULT_MAX_CAR_SPACES,Constants.DEFAULT_MAX_SMALL_CAR_SPACES,
 				Constants.DEFAULT_MAX_MOTORCYCLE_SPACES,Constants.DEFAULT_MAX_QUEUE_SIZE);
 		
-		maxCarSpaces = Constants.DEFAULT_MAX_CAR_SPACES - 30;// Constants.DEFAULT_MAX_SMALL_CAR_SPACES;
-		maxSmallCarSpaces = 30;//Constants.DEFAULT_MAX_SMALL_CAR_SPACES;
+		maxCarSpaces = Constants.DEFAULT_MAX_CAR_SPACES - Constants.DEFAULT_MAX_SMALL_CAR_SPACES;
+		maxSmallCarSpaces = Constants.DEFAULT_MAX_SMALL_CAR_SPACES;
 		maxMotorCycleSpaces = Constants.DEFAULT_MAX_MOTORCYCLE_SPACES;
 		allSpaces = maxCarSpaces + maxSmallCarSpaces + maxMotorCycleSpaces;
 		
@@ -127,10 +127,10 @@ public class CarPark {
 		this.maxQueueSize = maxQueueSize;
 		allSpaces = maxCarSpaces + maxSmallCarSpaces + maxMotorCycleSpaces;
 
-		smallCarArray = new ArrayList<Vehicle>(maxSmallCarSpaces);
-		carArray = new ArrayList<Vehicle>(maxCarSpaces);
-		bikeArray = new ArrayList<Vehicle>(maxMotorCycleSpaces);
-		queue = new ArrayList<Vehicle>(maxQueueSize);
+		smallCarArray = new ArrayList<Vehicle>();
+		carArray = new ArrayList<Vehicle>();
+		bikeArray = new ArrayList<Vehicle>();
+		queue = new ArrayList<Vehicle>();
 		archivedVehicles = new ArrayList<Vehicle>();
 		archiveDissatisfiedCars  = new ArrayList<Vehicle>();
 		
@@ -387,7 +387,7 @@ public class CarPark {
 	 * @return String containing dump of initial carpark state 
 	 */
 	public String initialState() {
-		return "CarPark [maxCarSpaces: " + this.maxCarSpaces
+		return "CarPark [maxCarSpaces: " + (maxCarSpaces + maxSmallCarSpaces)
 				+ " maxSmallCarSpaces: " + this.maxSmallCarSpaces 
 				+ " maxMotorCycleSpaces: " + this.maxMotorCycleSpaces 
 				+ " maxQueueSize: " + this.maxQueueSize + "]";
@@ -579,12 +579,13 @@ public class CarPark {
 
 
 		if(sim.newCarTrial()){
+
 			if (sim.smallCarTrial()){
 				idString = "SC" + carIdCount;
 				Car smallCar = new Car(idString, time, true);
 				count++;
 				carIdCount++;
-				status += "Small car created";
+
 				if (queueFull() && !spacesAvailable(smallCar)){
 					archiveNewVehicle(smallCar);
 					status += "|S:N>A|";
