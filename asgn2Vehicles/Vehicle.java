@@ -138,7 +138,7 @@ public abstract class Vehicle {
 			throw new VehicleException("The vehicle has overstayed it's duration");
 		}
 		currentState = vehicleState.ARCHIVED;
-		//this.departureTime = departureTime;
+		this.departureTime = departureTime;
 	}
 
 	/**
@@ -238,7 +238,26 @@ public abstract class Vehicle {
 	 */
 	@Override
 	public String toString() {
-		return "sdsdsd";
+		String queued;
+		String parked;
+		if (wasQueued()){
+			queued = "Vehicle was queued";
+		}else{
+			queued = "Vehicle was not queued";
+		}
+		
+		if (wasParked()){
+			parked = "Entry to Car Park: " + arrivalTime + "\nExit from Car Park: " + departureTime
+					+ "\nParking Time: " + (departureTime - parkingTime) + "\nCustomer was satisfied";
+		}else{
+			parked = "Vehicle was not parked \nCustomer was not satisfied";
+		}
+		
+		return 
+		"Vehicle vehID:" + vehicleId + "\n" +
+		"Arrival Time:" + arrivalTime + "\n" + 
+		queued + "\n" +
+		parked + "\n";
 		
 	}
 

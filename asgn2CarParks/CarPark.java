@@ -88,8 +88,8 @@ public class CarPark {
 		this(Constants.DEFAULT_MAX_CAR_SPACES,Constants.DEFAULT_MAX_SMALL_CAR_SPACES,
 				Constants.DEFAULT_MAX_MOTORCYCLE_SPACES,Constants.DEFAULT_MAX_QUEUE_SIZE);
 		
-		maxCarSpaces = Constants.DEFAULT_MAX_CAR_SPACES;
-		maxSmallCarSpaces = Constants.DEFAULT_MAX_SMALL_CAR_SPACES;
+		maxCarSpaces = Constants.DEFAULT_MAX_CAR_SPACES - 30;// Constants.DEFAULT_MAX_SMALL_CAR_SPACES;
+		maxSmallCarSpaces = 30;//Constants.DEFAULT_MAX_SMALL_CAR_SPACES;
 		maxMotorCycleSpaces = Constants.DEFAULT_MAX_MOTORCYCLE_SPACES;
 		allSpaces = maxCarSpaces + maxSmallCarSpaces + maxMotorCycleSpaces;
 		
@@ -121,9 +121,9 @@ public class CarPark {
 	 * @author kyleannett
 	 */
 	public CarPark(int maxCarSpaces,int maxSmallCarSpaces, int maxMotorCycleSpaces, int maxQueueSize) {
-		this.maxCarSpaces = maxCarSpaces;
+		this.maxCarSpaces = maxCarSpaces - maxSmallCarSpaces;
 		this.maxSmallCarSpaces = maxSmallCarSpaces;
-		this.maxMotorCycleSpaces = maxMotorCycleSpaces ;
+		this.maxMotorCycleSpaces = maxMotorCycleSpaces;
 		this.maxQueueSize = maxQueueSize;
 		allSpaces = maxCarSpaces + maxSmallCarSpaces + maxMotorCycleSpaces;
 
@@ -184,6 +184,8 @@ public class CarPark {
 			throw new SimulationException("Can't archive this vehicle");
 		}
 		archivedVehicles.add(v);
+		numDissatisfied++;
+	
 	}
 	
 	/**
@@ -208,8 +210,18 @@ public class CarPark {
 				v = queue.get(i);
 				if(time - v.getArrivalTime() > Constants.MAXIMUM_QUEUE_TIME){
 					archiveDissatisfiedCars.add(v);
+					archivedVehicles.add(v);
 					numDissatisfied++;
 					queue.remove(v);
+					if (v instanceof Car) {
+						if (((Car)v).isSmall()) {
+							status += "|S:Q>A|";
+						} else {
+							status += "|C:Q>A|";
+						}
+					} else {
+						status += "|M:Q>A|";
+					}
 				}
 			
 			}
@@ -349,8 +361,8 @@ public class CarPark {
 		+ "P:" + (getNumCars() + getNumMotorCycles()) + "::"
 		+ "C:" + getNumCars() + "::S:" + getNumSmallCars()
 		+ "::M:" + getNumMotorCycles()
-		+ "::D:" + this.numDissatisfied 
-		+ "::A:" + this.past.size()  
+		+ "::D:" + numDissatisfied
+		+ "::A:" + archivedVehicles.size()
 		+ "::Q:" + numVehiclesInQueue(); 
 		for (Vehicle v : this.queue) {
 			if (v instanceof Car) {
@@ -444,10 +456,12 @@ public class CarPark {
 	public void processQueue(int time, Simulator sim) throws VehicleException, SimulationException {
 	
 		archiveQueueFailures(time);
+		
 		Vehicle v;
-		for (int i = 0; i > queue.size(); i++){
-			v = queue.get(i);
-			
+		outerloop:
+		for (int i = 0; i < queue.size(); i++){
+
+			v = queue.get(0);
 			if (!v.isQueued()){
 				throw new VehicleException("the vehicle is in the wrong state");
 			}
@@ -460,7 +474,6 @@ public class CarPark {
 					throw new SimulationException("There are no suitable spaces to park the first in queue");
 				}
 				exitQueue(v, time);
-
 				parkVehicle(v, time, sim.setDuration());
 				
 				if (v instanceof Car){
@@ -473,9 +486,8 @@ public class CarPark {
 					status += "|M:Q>P|";
 				}
 			}else{
-				break;
+				break outerloop;
 			}
-
 		}
 	}
 
@@ -527,8 +539,10 @@ public class CarPark {
 				}
 			}
 		}
-		else{
+		else if (v instanceof MotorCycle){
 			if(bikeArray.size() < maxMotorCycleSpaces){
+				return true;
+			}else if(smallCarArray.size() < maxSmallCarSpaces){
 				return true;
 			}
 		}
@@ -567,38 +581,39 @@ public class CarPark {
 		if(sim.newCarTrial()){
 			if (sim.smallCarTrial()){
 				idString = "SC" + carIdCount;
-				Vehicle smallCar = new Car(idString, time, true);
-				
-				if (queueFull()){
+				Car smallCar = new Car(idString, time, true);
+				count++;
+				carIdCount++;
+				status += "Small car created";
+				if (queueFull() && !spacesAvailable(smallCar)){
 					archiveNewVehicle(smallCar);
 					status += "|S:N>A|";
 					
-				}else if (!spacesAvailable(smallCar) && !queueFull()){
+				}else if (!spacesAvailable(smallCar)){
 					enterQueue(smallCar);
 					status += "|S:N>Q|";
 					
 				}else{
-					carIdCount++;
+
 					parkVehicle(smallCar, time, sim.setDuration());
-					count++;
 					status += "|S:N>P|";
 				}			
 			}else{
 				idString = "C" + carIdCount;
-				Vehicle normalCar = new Car(idString, time, false);
-				
-				if (queueFull()){
+				Car normalCar = new Car(idString, time, false);
+				carIdCount++;
+				count++;
+				if (queueFull() && !spacesAvailable(normalCar)){
 					archiveNewVehicle(normalCar);
 					status += "|C:N>A|";
 					
-				}else if (!spacesAvailable(normalCar) && !queueFull()){
+				}else if (!spacesAvailable(normalCar)){
 					enterQueue(normalCar);
-					status += "|S:N>Q|";
+					status += "|C:N>Q|";
 					
 				}else{
-					carIdCount++;
+
 					parkVehicle(normalCar, time, sim.setDuration());
-					count++;
 					status += "|C:N>P|";
 				}
 			}
@@ -607,21 +622,18 @@ public class CarPark {
 		if (sim.motorCycleTrial()){
 
 			idString = "B" + bikeIdCount;
-			Vehicle motorCycle = new MotorCycle(idString, time);
-			
-			if (queueFull()){
+			MotorCycle motorCycle = new MotorCycle(idString, time);
+			bikeIdCount++;
+			count++;
+			if (queueFull() && !spacesAvailable(motorCycle)){
 				archiveNewVehicle(motorCycle);
-				status += "|B:N>A|";
-				
-			}else if (!spacesAvailable(motorCycle) && !queueFull()){
+				status += "|M:N>A|";
+			}else if (!spacesAvailable(motorCycle)){
 				enterQueue(motorCycle);
-				status += "|B:N>Q|";
-				
+				status += "|M:N>Q|";
 			}else{
-				bikeIdCount++;
 				parkVehicle(motorCycle, time, sim.setDuration());
-				count++;
-				status += "|B:N>P|";
+				status += "|M:N>P|";
 			}
 		
 		}

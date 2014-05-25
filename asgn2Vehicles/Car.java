@@ -58,6 +58,9 @@ public class Car extends Vehicle {
 	 */
 	@Override
 	public String toString() {
-		return "sdsds";
+		if (isSmall()){
+		return super.toString() + "Car can use small parking space";
+		}
+		return super.toString() + "Car cannot use small parking space";
 	}
 }
