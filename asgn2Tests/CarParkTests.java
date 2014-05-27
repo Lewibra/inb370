@@ -12,6 +12,8 @@ package asgn2Tests;
 
 import static org.junit.Assert.*;
 
+import java.lang.reflect.Array;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -113,6 +115,7 @@ public class CarParkTests {
 	 */
 	@Test
 	public void testCarParkFull() throws VehicleException, SimulationException {
+		//Create a carpark with 2 parks, one for a bike and one for a small car
 		CarPark testInstance = new CarPark( 1,1, 1, 1);
 		Car newCar = new Car(genericId, genericTime, false);
 		Car newCar2 = new Car(genericId, genericTime, false);
@@ -122,10 +125,7 @@ public class CarParkTests {
 		testInstance.parkVehicle(newSmallCar, genericTime, 60);
 		testInstance.parkVehicle(newBike, genericTime, 60);
 		testInstance.parkVehicle(newCar2, genericTime, 60);
-		testInstance.addCount();
-		testInstance.addCount();
-		testInstance.addCount();
-		testInstance.addCount();
+
 		assertTrue(testInstance.carParkFull());
 	}
 
@@ -173,7 +173,7 @@ public class CarParkTests {
 	 */
 	@Test
 	public void testGetNumCars() throws SimulationException, VehicleException {
-		CarPark testInstance = new CarPark( 5,5, 5, 5);
+		CarPark testInstance = new CarPark( 5,0, 5, 5);
 		Car newCar = new Car(genericId, genericTime, false);
 		Car newCar2 = new Car(genericId, genericTime, false);
 		Car newCar3 = new Car(genericId, genericTime, false);
@@ -349,6 +349,37 @@ public class CarParkTests {
 		testInstance.parkVehicle(newCar, genericTime, 60);
 		testInstance.unparkVehicle(newCar, 160);
 		assertTrue(newCar.wasParked());
+	}
+	
+	/* CarParkTests.java */
+	/*
+	 * Confirm that the API spec has not been violated through the
+	 * addition of public fields, constructors or methods that were
+	 * not requested
+	 */
+	@Test
+	public void NoExtraPublicMethods() {
+		//Extends Object, extras less toString() 
+		final int ExtraMethods = 21; 
+		final int NumObjectClassMethods = Array.getLength(Object.class.getMethods());
+		final int NumCarParkClassMethods = Array.getLength(CarPark.class.getMethods());
+		assertTrue("obj:"+NumObjectClassMethods+":cp:"+NumCarParkClassMethods,(NumObjectClassMethods+ExtraMethods)==NumCarParkClassMethods);
+	}
+	
+	@Test 
+	public void NoExtraPublicFields() {
+		//Same as Vehicle 
+		final int NumObjectClassFields = Array.getLength(Object.class.getFields());
+		final int NumCarParkClassFields = Array.getLength(CarPark.class.getFields());
+		assertTrue("obj:"+NumObjectClassFields+":cp:"+NumCarParkClassFields,(NumObjectClassFields)==NumCarParkClassFields);
+	}
+	
+	@Test 
+	public void NoExtraPublicConstructors() {
+		//One extra cons used. 
+		final int NumObjectClassConstructors = Array.getLength(Object.class.getConstructors());
+		final int NumCarParkClassConstructors = Array.getLength(CarPark.class.getConstructors());
+		assertTrue(":obj:"+NumObjectClassConstructors+":cp:"+NumCarParkClassConstructors,(NumObjectClassConstructors+1)==NumCarParkClassConstructors);
 	}
 
 }

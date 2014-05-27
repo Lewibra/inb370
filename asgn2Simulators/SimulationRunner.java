@@ -25,7 +25,6 @@ import asgn2Exceptions.VehicleException;
 public class SimulationRunner {
 	private CarPark carPark;
 	private Simulator sim;
-	
 	private Log log;
 	
 	/**
@@ -35,7 +34,7 @@ public class SimulationRunner {
 	 * @param log Log to provide logging services 
 	 */
 	public SimulationRunner(CarPark carPark, Simulator sim,Log log) {
-		this.carPark = new CarPark(100, 30, 30, 10);
+		this.carPark = carPark;
 		this.sim = sim;
 		this.log = log;
 		
@@ -52,7 +51,7 @@ public class SimulationRunner {
 	 */
 	public void runSimulation() throws VehicleException, SimulationException, IOException {
 		this.log.initialEntry(this.carPark,this.sim);
-		GUISimulator textGui = new GUISimulator("text");
+
 		
 		for (int time=0; time<=Constants.CLOSING_TIME; time++) {
 			//queue elements exceed max waiting time
@@ -60,14 +59,20 @@ public class SimulationRunner {
 				this.carPark.archiveQueueFailures(time);
 			}
 			//vehicles whose time has expired
+
 			if (!this.carPark.carParkEmpty()) {
 				//force exit at closing time, otherwise normal
 				boolean force = (time == Constants.CLOSING_TIME);
 				this.carPark.archiveDepartingVehicles(time, force);
 			}
+
 			//attempt to clear the queue 
 			if (!this.carPark.carParkFull()) {
 				this.carPark.processQueue(time,this.sim);
+			}
+			if (time == 68){
+				System.out.print("s");
+				
 			}
 			// new vehicles from minute 1 until the last hour
 			if (newVehiclesAllowed(time)) { 
@@ -75,7 +80,6 @@ public class SimulationRunner {
 			}
 			//Log progress 
 			this.log.logEntry(time,this.carPark);
-			textGui.updateTextBox(carPark.toString());
 		}
 		this.log.finalise(this.carPark);
 	}
@@ -85,11 +89,12 @@ public class SimulationRunner {
 	 * @param args Arguments to the simulation 
 	 */
 	public static void main(String[] args) {
-		CarPark cp = new CarPark();
+		CarPark cp = new CarPark(100, 30, 30, 10);
 		Simulator s = null;
 		Log l = null; 
 		try {
-			s = new Simulator();
+			s = new Simulator(100,300.0, 100.0,
+					0.75, 0.2, 0.1);
 			l = new Log();
 		} catch (IOException | SimulationException e1) {
 			e1.printStackTrace();

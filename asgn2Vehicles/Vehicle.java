@@ -50,6 +50,7 @@ public abstract class Vehicle {
 	private int departureTime;
 	private int arrivalTime;
 	private int parkingTime;
+	private int exitQueueTime;
 	private int intendedDuration;
 	private int queuingTime;
 	private int endQueueTime;
@@ -119,8 +120,7 @@ public abstract class Vehicle {
 		currentState = vehicleState.QUEUED;
 		checkQueued = true;
 		
-		//COMEBACK TO THIS
-		queuingTime = 0;
+
 	}
 	
 	/**
@@ -157,7 +157,8 @@ public abstract class Vehicle {
 		else if (currentState != vehicleState.QUEUED){
 			throw new VehicleException("Vehicle is not within the queue");
 		}
-		endQueueTime = exitTime;
+		exitQueueTime = exitTime;
+		queuingTime = exitTime - arrivalTime;
 		currentState = vehicleState.NEUTRAL;
 	}
 	
@@ -238,25 +239,28 @@ public abstract class Vehicle {
 	 */
 	@Override
 	public String toString() {
-		String queued;
+		String queued = "";
 		String parked;
-		if (wasQueued()){
-			queued = "Vehicle was queued";
-		}else{
+		if (!wasQueued()){
+
 			queued = "Vehicle was not queued";
+		}else if (wasQueued() && isSatisfied()){
+			queued = "Exit from Queue: " + exitQueueTime + "\nQueuing Time: " + queuingTime;
+		}else{
+			queued = "Exit from Queue: " + (arrivalTime + 26)  + "\nQueueing Time: 26" + "\nExceeded maximum acceptable queuing time by: 1";
 		}
 		
 		if (wasParked()){
-			parked = "Entry to Car Park: " + arrivalTime + "\nExit from Car Park: " + departureTime
+			parked = "\nEntry to Car Park: " + parkingTime + "\nExit from Car Park: " + departureTime
 					+ "\nParking Time: " + (departureTime - parkingTime) + "\nCustomer was satisfied";
 		}else{
-			parked = "Vehicle was not parked \nCustomer was not satisfied";
+			parked = "\nVehicle was not parked\nCustomer was not satisfied";
 		}
 		
 		return 
-		"Vehicle vehID:" + vehicleId + "\n" +
-		"Arrival Time:" + arrivalTime + "\n" + 
-		queued + "\n" +
+		"Vehicle vehID: " + vehicleId + "\n" +
+		"Arrival Time: " + arrivalTime + "\n" + 
+		queued +
 		parked + "\n";
 		
 	}
