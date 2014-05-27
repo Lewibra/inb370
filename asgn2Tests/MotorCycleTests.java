@@ -12,8 +12,6 @@ package asgn2Tests;
 
 import static org.junit.Assert.*;
 
-import java.lang.reflect.Array;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -68,6 +66,8 @@ public class MotorCycleTests {
 	@Test
 	public void testVehicle() throws VehicleException {
 		Vehicle testVeh = new MotorCycle(genericId, genericArrivalTime);
+		assertEquals(testVeh.getVehID(), genericId);
+		assertEquals(testVeh.getArrivalTime(), genericArrivalTime);
 	}
 
 	/**
@@ -256,39 +256,120 @@ public class MotorCycleTests {
 	@Test
 	public void testToString() throws VehicleException {
 		MotorCycle newBike = new MotorCycle(genericId, genericArrivalTime);
-		nkewBike.toString();
-		//comeback
+		String bikeStr = newBike.toString();
+		assertEquals(bikeStr, "Vehicle vehID: 1C"
+				+ "\nArrival Time: 100"
+				+ "\nVehicle was not queued"
+				+ "\nVehicle was not parked"
+				+ "\nCustomer was not satisfied"
+				+ "\n");
 	}
-
 	
-	
-	/* MotorCycleTEsts */
-	/*
-	 * Confirm that the API spec has not been violated through the
-	 * addition of public fields, constructors or methods that were
-	 * not requested
+	/**
+	 * test that exceptions get thrown for enter queued state
+	 * @throws VehicleException
+	 * @author kyle annett
 	 */
-	@Test
-	public void NoExtraPublicMethods() {
-		//MotorCycle Class implements Vehicle
-		final int NumVehicleClassMethods = Array.getLength(Vehicle.class.getMethods());
-		final int NumMotorCycleClassMethods = Array.getLength(MotorCycle.class.getMethods());
-		assertTrue("veh:"+NumVehicleClassMethods+":MotorCycle:"+NumMotorCycleClassMethods,(NumVehicleClassMethods)==NumMotorCycleClassMethods);
+	@Test (expected = VehicleException.class)
+	public void testEnterQueueException() throws VehicleException {
+		MotorCycle newBike = new MotorCycle(genericId, genericArrivalTime);
+		newBike.enterQueuedState();
+		newBike.enterQueuedState();
 	}
 	
-	@Test 
-	public void NoExtraPublicFields() {
-		//Same as Vehicle 
-		final int NumVehicleClassFields = Array.getLength(Vehicle.class.getFields());
-		final int NumMotorCycleClassFields = Array.getLength(MotorCycle.class.getFields());
-		assertTrue("veh:"+NumVehicleClassFields+":MotorCycle:"+NumMotorCycleClassFields,(NumVehicleClassFields)==NumMotorCycleClassFields);
+	/**
+	 * test that exceptions get thrown for exit Queued state
+	 * @throws VehicleException
+	 * @author kyle annett
+	 */
+	@Test (expected = VehicleException.class)
+	public void testExitQueueException() throws VehicleException {
+		MotorCycle newBike = new MotorCycle(genericId, genericArrivalTime);
+		newBike.exitQueuedState(departTime);
 	}
-	
-	@Test 
-	public void NoExtraPublicConstructors() {
-		//Same as Vehicle
-		final int NumVehicleClassConstructors = Array.getLength(Vehicle.class.getConstructors());
-		final int NumMotorCycleClassConstructors = Array.getLength(MotorCycle.class.getConstructors());
-		assertTrue(":veh:"+NumVehicleClassConstructors+":mc:"+NumMotorCycleClassConstructors,(NumVehicleClassConstructors)==NumMotorCycleClassConstructors);
+	/**
+	 * test that exceptions get thrown for exit Queued state
+	 * @throws VehicleException
+	 * @author kyle annett
+	 */
+	@Test (expected = VehicleException.class)
+	public void testExitQueueExceptionTime() throws VehicleException {
+		MotorCycle newBike = new MotorCycle(genericId, genericArrivalTime);
+		newBike.enterQueuedState();
+		newBike.exitQueuedState(-10);
+	}
+	/**
+	 * test that exceptions get thrown for enter Parked state
+	 * @throws VehicleException
+	 * @author kyle annett
+	 */
+	@Test (expected = VehicleException.class)
+	public void testEnterParkStateException() throws VehicleException {
+		MotorCycle newBike = new MotorCycle(genericId, genericArrivalTime);
+		newBike.enterParkedState(genericArrivalTime, departTime);
+		newBike.enterParkedState(genericArrivalTime, departTime);
+	}
+	/**
+	 * test that exceptions get thrown for enter Parked state
+	 * @throws VehicleException
+	 * @author kyle annett
+	 */
+	@Test (expected = VehicleException.class)
+	public void testEnterParkStateExceptionZero() throws VehicleException {
+		MotorCycle newBike = new MotorCycle(genericId, genericArrivalTime);
+		newBike.enterParkedState(genericArrivalTime, 0);
+	}
+	/**
+	 * test that exceptions get thrown for enter Parked state
+	 * @throws VehicleException
+	 * @author kyle annett
+	 */
+	@Test (expected = VehicleException.class)
+	public void testEnterParkStateExceptionWasQueued() throws VehicleException {
+		MotorCycle newBike = new MotorCycle(genericId, genericArrivalTime);
+		newBike.enterQueuedState();
+		newBike.enterParkedState(genericArrivalTime, 0);
+	}
+	/**
+	 * test that exceptions get thrown for enter Parked state
+	 * @throws VehicleException
+	 * @author kyle annett
+	 */
+	@Test (expected = VehicleException.class)
+	public void testEnterParkStateExceptionZeroArrival() throws VehicleException {
+		MotorCycle newBike = new MotorCycle(genericId, genericArrivalTime);
+		newBike.enterParkedState(-1, genericArrivalTime);
+	}
+	/**
+	 * test that exceptions get thrown for exit Parked state
+	 * @throws VehicleException
+	 * @author kyle annett
+	 */
+	@Test (expected = VehicleException.class)
+	public void testExitParkStateException() throws VehicleException {
+		MotorCycle newBike = new MotorCycle(genericId, genericArrivalTime);
+		newBike.exitParkedState(100);
+	}
+	/**
+	 * test that exceptions get thrown for exit Parked state
+	 * @throws VehicleException
+	 * @author kyle annett
+	 */
+	@Test (expected = VehicleException.class)
+	public void testExitParkStateExceptionifQueued() throws VehicleException {
+		MotorCycle newBike = new MotorCycle(genericId, genericArrivalTime);
+		newBike.enterQueuedState();
+		newBike.exitParkedState(100);
+	}
+	/**
+	 * test that exceptions get thrown for exit Parked state
+	 * @throws VehicleException
+	 * @author kyle annett
+	 */
+	@Test (expected = VehicleException.class)
+	public void testExitParkStateExceptionLess() throws VehicleException {
+		MotorCycle newBike = new MotorCycle(genericId, genericArrivalTime);
+		newBike.enterParkedState(100, 10);
+		newBike.exitParkedState(100);
 	}
 }

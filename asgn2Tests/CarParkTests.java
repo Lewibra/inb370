@@ -12,7 +12,7 @@ package asgn2Tests;
 
 import static org.junit.Assert.*;
 
-import java.lang.reflect.Array;
+import java.io.IOException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -21,6 +21,8 @@ import org.junit.Test;
 import asgn2CarParks.CarPark;
 import asgn2Exceptions.SimulationException;
 import asgn2Exceptions.VehicleException;
+import asgn2Simulators.Log;
+import asgn2Simulators.Simulator;
 import asgn2Vehicles.*;
 
 /**
@@ -66,6 +68,7 @@ public class CarParkTests {
 	 * Test method for {@link asgn2CarParks.CarPark#archiveNewVehicle(asgn2Vehicles.Vehicle)}.
 	 * @throws VehicleException 
 	 * @throws SimulationException 
+	 * @author kyle
 	 */
 	@Test
 	public void testArchiveNewVehicle() throws VehicleException, SimulationException {
@@ -80,6 +83,7 @@ public class CarParkTests {
 	 * Test method for {@link asgn2CarParks.CarPark#archiveQueueFailures(int)}.
 	 * @throws VehicleException 
 	 * @throws SimulationException 
+	 * @author kyle
 	 */
 	@Test
 	public void testArchiveQueueFailures() throws VehicleException, SimulationException {
@@ -115,17 +119,19 @@ public class CarParkTests {
 	 */
 	@Test
 	public void testCarParkFull() throws VehicleException, SimulationException {
-		//Create a carpark with 2 parks, one for a bike and one for a small car
-		CarPark testInstance = new CarPark( 1,1, 1, 1);
+		CarPark testInstance = new CarPark( 3,1, 1, 1);
 		Car newCar = new Car(genericId, genericTime, false);
 		Car newCar2 = new Car(genericId, genericTime, false);
 		Car newSmallCar = new Car(genericId, genericTime, true);
+		Car newSmallCar2 = new Car(genericId, genericTime, true);
 		MotorCycle newBike = new MotorCycle(genericId, genericTime);
+		MotorCycle newBike2 = new MotorCycle(genericId, genericTime);
 		testInstance.parkVehicle(newCar, genericTime, 60);
 		testInstance.parkVehicle(newSmallCar, genericTime, 60);
 		testInstance.parkVehicle(newBike, genericTime, 60);
 		testInstance.parkVehicle(newCar2, genericTime, 60);
-
+		testInstance.enterQueue(newBike2);
+		testInstance.parkVehicle(newSmallCar2, genericTime, 60);
 		assertTrue(testInstance.carParkFull());
 	}
 
@@ -160,20 +166,27 @@ public class CarParkTests {
 
 	/**
 	 * Test method for {@link asgn2CarParks.CarPark#finalState()}.
+	 * @author kyle
 	 */
 	@Test
 	public void testFinalState() {
-		fail("Not yet implemented"); // TODO
+		CarPark testInstance = new CarPark( 1,1, 1, 5);
+		String finalStr = testInstance.finalState();
+		assertEquals(finalStr, "Vehicles Processed: count:1, logged: 0"
+				+ "\nVehicle Record: "
+				+ "\n"
+				+ "\n");
 	}
 
 	/**
 	 * Test method for {@link asgn2CarParks.CarPark#getNumCars()}.
 	 * @throws VehicleException 
 	 * @throws SimulationException 
+	 * @author kyle
 	 */
 	@Test
 	public void testGetNumCars() throws SimulationException, VehicleException {
-		CarPark testInstance = new CarPark( 5,0, 5, 5);
+		CarPark testInstance = new CarPark( 10,5, 5, 5);
 		Car newCar = new Car(genericId, genericTime, false);
 		Car newCar2 = new Car(genericId, genericTime, false);
 		Car newCar3 = new Car(genericId, genericTime, false);
@@ -188,6 +201,7 @@ public class CarParkTests {
 	 * Test method for {@link asgn2CarParks.CarPark#getNumMotorCycles()}.
 	 * @throws VehicleException 
 	 * @throws SimulationException 
+	 * @author kyle
 	 */
 	@Test
 	public void testGetNumMotorCycles() throws SimulationException, VehicleException {
@@ -206,6 +220,7 @@ public class CarParkTests {
 	 * Test method for {@link asgn2CarParks.CarPark#getNumSmallCars()}.
 	 * @throws VehicleException 
 	 * @throws SimulationException 
+	 * @author kyle
 	 */
 	@Test
 	public void testGetNumSmallCars() throws SimulationException, VehicleException {
@@ -222,18 +237,25 @@ public class CarParkTests {
 
 	/**
 	 * Test method for {@link asgn2CarParks.CarPark#getStatus(int)}.
+	 * @author kyle
 	 */
 	@Test
 	public void testGetStatus() {
-		fail("Not yet implemented"); // TODO
+		CarPark testInstance = new CarPark( 1,1, 1, 5);
+		String statStr = testInstance.getStatus(genericTime);
+		assertEquals(statStr, "100::1::P:0::C:0::S:0::M:0::D:2::A:0::Q:0"
+				+ "\n");
 	}
 
 	/**
 	 * Test method for {@link asgn2CarParks.CarPark#initialState()}.
+	 * @author kyle
 	 */
 	@Test
 	public void testInitialState() {
-		fail("Not yet implemented"); // TODO
+		CarPark testInstance = new CarPark( 1,1, 1, 5);
+		String testIn = testInstance.initialState();
+		assertEquals(testIn, "CarPark [maxCarSpaces: 1 maxSmallCarSpaces: 1 maxMotorCycleSpaces: 1 maxQueueSize: 5]");
 	}
 
 	/**
@@ -270,10 +292,30 @@ public class CarParkTests {
 
 	/**
 	 * Test method for {@link asgn2CarParks.CarPark#processQueue(int, asgn2Simulators.Simulator)}.
+	 * @throws VehicleException 
+	 * @throws SimulationException 
+	 * @author kyle
 	 */
 	@Test
-	public void testProcessQueue() {
-		fail("Not yet implemented"); // TODO
+	public void testProcessQueue() throws VehicleException, SimulationException {
+		CarPark cp = new CarPark(100, 30, 30, 10);
+		Simulator s = null;
+		Log l = null; 
+		try {
+			s = new Simulator(100,300.0, 100.0,
+					0.75, 0.2, 0.1);
+			l = new Log();
+		} catch (IOException | SimulationException e1) {
+			e1.printStackTrace();
+			System.exit(-1);
+		}
+		Car newCar = new Car(genericId, genericTime, false);
+		Car newCar2 = new Car(genericId, 110, false);
+		cp.enterQueue(newCar);
+		cp.enterQueue(newCar2);
+		cp.processQueue(126, s);
+		assertTrue(newCar.wasQueued());
+		assertFalse(newCar.isParked());
 	}
 
 	/**
@@ -321,19 +363,44 @@ public class CarParkTests {
 
 	/**
 	 * Test method for {@link asgn2CarParks.CarPark#toString()}.
-	 * 
+	 * @throws VehicleException 
+	 * @throws SimulationException 
+	 * @author kyle
 	 */
 	@Test
-	public void testToString() {
-		fail("Not yet implemented"); // TODO
+	public void testToString() throws SimulationException, VehicleException {
+		CarPark testInstance = new CarPark( 2,1, 1, 1);
+		Car newCar = new Car(genericId, genericTime, false);
+		testInstance.parkVehicle(newCar, genericTime, 60);
+		String parkStr = testInstance.toString();
+		assertEquals(parkStr,"CarPark [count: 0 numCars: 1 numSmallCars: 0 numMotorCycles: 0 queue: 0 numDissatisfied: 1 past: 0]");
 	}
 
 	/**
 	 * Test method for {@link asgn2CarParks.CarPark#tryProcessNewVehicles(int, asgn2Simulators.Simulator)}.
+	 * @throws SimulationException 
+	 * @throws VehicleException 
+	 * @author kyle
 	 */
 	@Test
-	public void testTryProcessNewVehicles() {
-		fail("Not yet implemented"); // TODO
+	public void testTryProcessNewVehicles() throws VehicleException, SimulationException {
+		boolean checkCreate = false;
+		CarPark cp = new CarPark(100, 30, 30, 10);
+		Simulator s = null;
+		Log l = null; 
+		try {
+			s = new Simulator(100,300.0, 100.0,
+					0.75, 0.2, 0.1);
+			l = new Log();
+		} catch (IOException | SimulationException e1) {
+			e1.printStackTrace();
+			System.exit(-1);
+		}
+		cp.tryProcessNewVehicles(genericTime, s);
+		if(cp.getNumCars() == 1||cp.getNumMotorCycles() == 1){
+			checkCreate = true;
+		}
+		assertTrue(checkCreate);
 	}
 
 	/**
@@ -349,37 +416,6 @@ public class CarParkTests {
 		testInstance.parkVehicle(newCar, genericTime, 60);
 		testInstance.unparkVehicle(newCar, 160);
 		assertTrue(newCar.wasParked());
-	}
-	
-	/* CarParkTests.java */
-	/*
-	 * Confirm that the API spec has not been violated through the
-	 * addition of public fields, constructors or methods that were
-	 * not requested
-	 */
-	@Test
-	public void NoExtraPublicMethods() {
-		//Extends Object, extras less toString() 
-		final int ExtraMethods = 21; 
-		final int NumObjectClassMethods = Array.getLength(Object.class.getMethods());
-		final int NumCarParkClassMethods = Array.getLength(CarPark.class.getMethods());
-		assertTrue("obj:"+NumObjectClassMethods+":cp:"+NumCarParkClassMethods,(NumObjectClassMethods+ExtraMethods)==NumCarParkClassMethods);
-	}
-	
-	@Test 
-	public void NoExtraPublicFields() {
-		//Same as Vehicle 
-		final int NumObjectClassFields = Array.getLength(Object.class.getFields());
-		final int NumCarParkClassFields = Array.getLength(CarPark.class.getFields());
-		assertTrue("obj:"+NumObjectClassFields+":cp:"+NumCarParkClassFields,(NumObjectClassFields)==NumCarParkClassFields);
-	}
-	
-	@Test 
-	public void NoExtraPublicConstructors() {
-		//One extra cons used. 
-		final int NumObjectClassConstructors = Array.getLength(Object.class.getConstructors());
-		final int NumCarParkClassConstructors = Array.getLength(CarPark.class.getConstructors());
-		assertTrue(":obj:"+NumObjectClassConstructors+":cp:"+NumCarParkClassConstructors,(NumObjectClassConstructors+1)==NumCarParkClassConstructors);
 	}
 
 }

@@ -12,17 +12,12 @@ package asgn2Tests;
 
 import static org.junit.Assert.*;
 
-import java.lang.reflect.Array;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import asgn2CarParks.CarPark;
-import asgn2Exceptions.SimulationException;
 import asgn2Exceptions.VehicleException;
 import asgn2Vehicles.Car;
-import asgn2Vehicles.Vehicle;
 
 /**
  * @author hogan
@@ -49,11 +44,19 @@ public class CarTests {
 
 	/**
 	 * Test method for {@link asgn2Vehicles.Car#toString()}.
+	 * @throws VehicleException 
 	 */
 	@Test
-	public void testToString() {
-		fail("Not yet implemented"); // TODO
-	}
+	public void testToString() throws VehicleException {
+		Car newCar = new Car(genericId, genericTime, true);
+		String parkStr = newCar.toString();
+		assertEquals(parkStr, "Vehicle vehID: 1C"
+				+ "\nArrival Time: 100"
+				+ "\nVehicle was not queued"
+				+ "\nVehicle was not parked"
+				+ "\nCustomer was not satisfied"
+				+ "\nCar can use small car parking space");
+		}
 
 	/**
 	 * Test method for {@link asgn2Vehicles.Car#Car(java.lang.String, int, boolean)}.
@@ -80,39 +83,24 @@ public class CarTests {
 		boolean checkSmall = newCar.isSmall();
 		assertTrue(checkSmall);
 	}
-
-	
-	/*
-	 * Confirm that the API spec has not been violated through the
-	 * addition of public fields, constructors or methods that were
-	 * not requested
+	/**
+	 * Test method for checking exception gets thrown in constructor
+	 * @throws VehicleException
+	 * @author kyle annett
 	 */
-	@Test
-	public void NoExtraPublicMethods() {
-		//Car Class implements Vehicle, adds isSmall() 
-		final int NumVehicleClassMethods = Array.getLength(Vehicle.class.getMethods());
-		final int NumCarClassMethods = Array.getLength(Car.class.getMethods());
-		assertTrue("veh:"+NumVehicleClassMethods+":car:"+NumCarClassMethods,(NumVehicleClassMethods+1)==NumCarClassMethods);
+	@Test (expected = VehicleException.class)
+	public void testCatchZeroConstructor() throws VehicleException{
+		Car newCar = new Car("1C", 0, true);
 	}
 	
-	@Test 
-	public void NoExtraPublicFields() {
-		//Same as Vehicle 
-		final int NumVehicleClassFields = Array.getLength(Vehicle.class.getFields());
-		final int NumCarClassFields = Array.getLength(Car.class.getFields());
-		assertTrue("veh:"+NumVehicleClassFields+":car:"+NumCarClassFields,(NumVehicleClassFields)==NumCarClassFields);
+	/**
+	 * Test method for checking exception gets thrown in constructor
+	 * @throws VehicleException
+	 * @author kyle annett
+	 */
+	@Test (expected = VehicleException.class)
+	public void testCatchLessZeroConstructor() throws VehicleException{
+		Car newCar = new Car("1C", -20, true);
 	}
-	
-	@Test 
-	public void NoExtraPublicConstructors() {
-		//Same as Vehicle
-		final int NumVehicleClassConstructors = Array.getLength(Vehicle.class.getConstructors());
-		final int NumCarClassConstructors = Array.getLength(Car.class.getConstructors());
-		assertTrue(":veh:"+NumVehicleClassConstructors+":car:"+NumCarClassConstructors,(NumVehicleClassConstructors)==NumCarClassConstructors);
-	}
-	
-
-	
-	
 
 }
