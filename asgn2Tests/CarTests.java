@@ -12,13 +12,17 @@ package asgn2Tests;
 
 import static org.junit.Assert.*;
 
+import java.lang.reflect.Array;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import asgn2CarParks.CarPark;
+import asgn2Exceptions.SimulationException;
 import asgn2Exceptions.VehicleException;
-
 import asgn2Vehicles.Car;
+import asgn2Vehicles.Vehicle;
 
 /**
  * @author hogan
@@ -76,6 +80,7 @@ public class CarTests {
 		boolean checkSmall = newCar.isSmall();
 		assertTrue(checkSmall);
 	}
+
 	
 	/*
 	 * Confirm that the API spec has not been violated through the

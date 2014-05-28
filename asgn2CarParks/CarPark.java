@@ -47,7 +47,7 @@ public class CarPark {
 	private int numParkedSmall=0;
 	private int numParkedCycle=0;
 	
-	//These methods are public for the graph
+	//These variables are public for the graph
 	public static int numDissatisfied = 0;
 	public static int count = 0;
 	
@@ -219,8 +219,11 @@ public class CarPark {
 	 * @author kyleannett, Lewis
 	 */
 	public void archiveQueueFailures(int time) throws VehicleException {
+		ArrayList<Vehicle> tempVehicleList = new ArrayList<Vehicle>();
 		
-		for(int i = 0; i < queue.size(); i++){
+		final int queueSize = queue.size();
+		
+		for(int i = 0; i < queueSize; i++){
 			if((queue.get(i).isQueued() != true)){
 				throw new VehicleException("vehicle in the wrong state");
 			}
@@ -233,10 +236,8 @@ public class CarPark {
 				Vehicle v;
 				v = queue.get(i);
 				if((time - v.getArrivalTime()) > Constants.MAXIMUM_QUEUE_TIME){
-					archiveDissatisfiedCars.add(v);
-					archivedVehicles.add(v);
-					numDissatisfied++;
-					queue.remove(v);
+					tempVehicleList.add(v);
+
 					if (v instanceof Car) {
 						if (((Car)v).isSmall()) {
 							status += "|S:Q>A|";
@@ -250,6 +251,14 @@ public class CarPark {
 			
 			}
 		}
+		
+		for (Vehicle v : tempVehicleList){
+			archiveDissatisfiedCars.add(v);
+			archivedVehicles.add(v);
+			numDissatisfied++;
+			queue.remove(v);
+		}
+		tempVehicleList.clear();
 		
 	}
 	
@@ -481,15 +490,15 @@ public class CarPark {
 	 * @author Lewis
 	 */
 	public void processQueue(int time, Simulator sim) throws VehicleException, SimulationException {
-	
+		ArrayList<Vehicle> tempVehicleList = new ArrayList<Vehicle>();
 		archiveQueueFailures(time);
 		
-		final int tempQueueSize = queue.size();
+		int tempQueueSize = queue.size();
 		Vehicle v;
 		outerloop:
 		for (int i = 0; i < tempQueueSize; i++){
 
-			v = queue.get(0);
+			v = queue.get(i);
 			if (!v.isQueued()){
 				throw new VehicleException("the vehicle is in the wrong state");
 			}
@@ -503,6 +512,8 @@ public class CarPark {
 				}
 				exitQueue(v, time);
 				parkVehicle(v, time, sim.setDuration());
+				i--;
+				tempQueueSize--;
 				
 				if (v instanceof Car){
 					if (((Car)v).isSmall()){
@@ -513,9 +524,9 @@ public class CarPark {
 				}else{
 					status += "|M:Q>P|";
 				}
-			}else{
-				break outerloop;
-			}
+			}//else{
+			//	break outerloop;
+			//}
 		}
 	}
 

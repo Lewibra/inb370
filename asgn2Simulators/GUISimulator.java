@@ -330,7 +330,9 @@ public class GUISimulator extends JFrame implements Runnable {
 
 		display.append(carPark.initialState() + "\n");
 		for (int time=0; time<=Constants.CLOSING_TIME; time++) {
-			
+			if (time == 362){
+				System.console();
+			}
 			if (time == Constants.CLOSING_TIME){
 				barChartSetup();
 			}
@@ -354,8 +356,10 @@ public class GUISimulator extends JFrame implements Runnable {
 				carPark.tryProcessNewVehicles(time,this.sim);
 			}
 			//Log progress 
+
 			log.logEntry(time,this.carPark);
 			display.append(carPark.getStatus(time));
+
 
 			
 
